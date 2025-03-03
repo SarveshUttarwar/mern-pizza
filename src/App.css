@@ -791,7 +791,6 @@
   border: 1px solid #dcdcdc;
   border-radius: 5px;
   background-color: #f9f9f9;
-  width: fit-content;
 }
 
 /* Measures Label */
@@ -835,27 +834,50 @@
 
 
 /* Add & Remove Buttons */
-.add-button,
-.remove-button {
-  padding: 5px 10px;
-  font-size: 13px;
-  border: none;
-  cursor: pointer;
-  border-radius: 3px;
+/* Add Button */
+
+.measures-container {
+  display: flex;
+  align-items: center;  /* Ensures vertical alignment */
+  gap: 10px;  /* Adds spacing between buttons */
 }
 
 .add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: normal;
+  width: 80px;
+  height: 36px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
   background-color: #007bff;
-  color: white;
-}
-
-.remove-button {
-  background-color: #dc3545;
   color: white;
 }
 
 .add-button:hover {
   background-color: #0056b3;
+}
+
+/* Remove Button */
+.remove-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: normal;
+  width: 80px;
+  height: 36px;  /* Matching height with Add button */
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  background-color: #dc3545;
+  color: white;
 }
 
 .remove-button:hover {
@@ -864,7 +886,7 @@
 
 /* Dropdown Styling */
 .measures-dropdown {
-  width: 200px;
+  width: 835px;
   padding: 6px;
   font-size: 14px;
   border: 1px solid #ccc;
