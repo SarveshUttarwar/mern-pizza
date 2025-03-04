@@ -143,7 +143,7 @@ const ForecastSettings = () => {
                     <div className="input-data-section">
                         <h4>Input Data</h4>
                         <div className="measures-container">
-                            <label><strong>Measures:</strong></label>
+                            <label>Measures:</label>
                             <button className="add-button" onClick={addMeasure}>Add</button>
                             <button className="remove-button" onClick={removeMeasure}>Remove</button>
                         </div>
