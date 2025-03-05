@@ -14,7 +14,7 @@ function Settings() {
   const [themeMessage, setThemeMessage] = useState("");
 
   const handleSettingClick = (setting) => {
-    setSelectedSetting(setting);
+    setSelectedSetting(selectedSetting === setting ? null : setting);
   };
 
   const handleThemeChange = (theme) => {
@@ -35,8 +35,10 @@ function Settings() {
     Appearance: (
       <div className="setting-detail">
         <h3>Appearance</h3>
-        <button onClick={() => handleThemeChange("Dark")}>Dark Mode</button>
-        <button onClick={() => handleThemeChange("Light")}>Light Mode</button>
+        <div className="theme-buttons">
+          <button onClick={() => handleThemeChange("Dark")}>Dark Mode</button>
+          <button onClick={() => handleThemeChange("Light")}>Light Mode</button>
+        </div>
         {themeMessage && <p className="theme-message">{themeMessage}</p>}
       </div>
     ),
@@ -102,16 +104,14 @@ function Settings() {
           { icon: <FaHeadphones />, label: "Help and Support" },
           { icon: <FaInfoCircle />, label: "About" },
         ].map((item, index) => (
-          <div
-            key={index}
-            className={`settings-item ${selectedSetting === item.label ? "active" : ""}`}
-            onClick={() => handleSettingClick(item.label)}
-          >
-            <div className="settings-icon">{item.icon}</div>
-            <span>{item.label}</span>
-            <span className="arrow">›</span>
+          <div key={index} className="settings-item">
+            <div className="settings-left" onClick={() => handleSettingClick(item.label)}>
+              <span className="settings-icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </div>
+            <span className="arrow" onClick={() => handleSettingClick(item.label)}>›</span>
 
-            {/* Right-Side Pop-Up */}
+            {/* Submenu */}
             {selectedSetting === item.label && (
               <div className="submenu-container">
                 <button className="close-btn" onClick={() => setSelectedSetting(null)}>×</button>

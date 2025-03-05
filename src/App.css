@@ -1777,27 +1777,36 @@ body {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* ICON + TEXT */
-.settings-icon {
+.settings-left {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+/* ICON + TEXT */
+.settings-icon {
   font-size: 18px;
   color: #333;
 }
 
 .settings-item span {
-  flex-grow: 1;
   font-size: 16px;
   font-weight: 500;
-  margin-left: 8px;
 }
 
-/* RIGHT-SIDE POPUP */
+/* ARROW POSITIONING */
+.arrow {
+  font-size: 20px;
+  font-weight: bold;
+  color: #777;
+  transition: transform 0.3s;
+}
+
+/* RIGHT-SIDE DROPDOWN */
 .submenu-container {
   position: absolute;
   top: 0;
-  left: 110%;
+  left: 100%;
   width: 320px;
   background: white;
   border-radius: 12px;
@@ -1808,6 +1817,11 @@ body {
   gap: 12px;
   transition: all 0.3s ease-in-out;
   min-height: 100%;
+  z-index: 10;
+}
+
+.settings-item:hover .submenu-container {
+  left: 100%;
 }
 
 /* CLOSE BUTTON */
@@ -1819,127 +1833,136 @@ body {
   align-self: flex-end;
 }
 
-/* profile-css */
-
-
-/* Dashboard Container */
-.dashboard-container {
-  width: 90%;
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Header */
-.dashboard-header {
+/* THEME BUTTONS */
+.theme-buttons {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
   gap: 10px;
-  font-size: 16px;
-  font-weight: bold;
 }
 
-.user-icon {
-  font-size: 24px;
+.theme-buttons button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
 }
+
+.theme-buttons button:hover {
+  opacity: 0.8;
+}
+
 
 /* Dashboard Content */
+/* Ensure all cards have the same height */
 .dashboard-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
-  margin-top: 20px;
+  align-items: stretch; /* Makes all child elements the same height */
 }
+
+.profile-card,
+.skills-card,
+.about-card,
+.experience-card {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+  width: calc(50% - 10px); /* Adjusts width for responsiveness */
+  min-height: 250px; /* Ensures uniform height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distributes content evenly */
+}
+
+/* For mobile screens, ensure full width */
+@media (max-width: 768px) {
+  .profile-card,
+  .skills-card,
+  .about-card,
+  .experience-card {
+    width: 100%;
+  }
+}
+
 
 /* Profile Card */
 .profile-card {
   background: #f9f9f9;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 10px;
   text-align: center;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  transition: 0.3s;
+}
+
+.profile-card:hover {
+  transform: scale(1.02);
+}
+
+/* Profile Image */
+.profile-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .profile-img {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
 }
 
-.profile-edit-btn {
-  background: #4CAF50;
+.default-avatar {
+  font-size: 120px;
+  color: gray;
+}
+
+/* 3D Avatar Effect */
+.three-d-avatar {
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Upload Button */
+.upload-btn {
+  padding: 10px 15px;
+  background: #001F3F;
   color: white;
-  padding: 8px 12px;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-}
-
-.profile-edit-btn:hover {
-  background: #45a049;
-}
-
-/* Shop Accounts & Skills */
-.shop-accounts-card,
-.skills-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.account-status, .skill {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-/* Status Colors */
-.status {
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: 5px;
   font-weight: bold;
 }
 
-.status.active {
-  background: #4CAF50;
-  color: white;
+.upload-btn:hover {
+  background: #001F3F;
 }
 
-.status.inactive {
+/* 3D Effect */
+.three-d-effect {
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+.three-d-effect:hover {
+  transform: scale(1.03);
+}
+
+/* Remove Button */
+
+
+.remove-btn {
   background: #ff4d4d;
+  padding: 10px;
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-/* Skill Level */
-.skill-level {
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.skill-level.high {
-  background: #4CAF50;
-  color: white;
-}
-
-.skill-level.medium {
-  background: #FFC107;
-  color: white;
-}
-
-.skill-level.low {
-  background: #FF4D4D;
-  color: white;
-}
