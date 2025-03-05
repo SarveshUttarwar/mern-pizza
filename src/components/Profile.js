@@ -6,6 +6,8 @@ function ProfileDashboard() {
   const [profileImage, setProfileImage] = useState(null);
   const [imageInput, setImageInput] = useState("");
   const [fileInput, setFileInput] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
 
   // Function to handle file upload
   const handleFileUpload = (event) => {
@@ -14,6 +16,21 @@ function ProfileDashboard() {
       setProfileImage(URL.createObjectURL(file));
     }
   };
+
+  // Function to add a task
+  const addTask = () => {
+    if (newTask.trim() !== "") {
+      setTasks([...tasks, newTask]);
+      setNewTask("");
+    }
+  };
+
+  // Function to remove a task
+  const removeTask = (index) => {
+    const updatedTasks = tasks.filter((_, i) => i !== index);
+    setTasks(updatedTasks);
+  };
+
 
   // Function to handle image URL input
   const handleImageURLUpload = () => {
@@ -32,7 +49,7 @@ function ProfileDashboard() {
     <div className="dashboard-container">
       {/* Header */}
       <div className="dashboard-header">
-        <h2>Finance Dashboard</h2>
+        <h2>Profile Dashboard</h2>
         <div className="user-profile">
           <FaUserCircle className="user-icon" />
           <span><strong>Hello, Sarvesh!</strong></span>
@@ -94,6 +111,27 @@ function ProfileDashboard() {
             <li><strong>Data Analysis</strong></li>
             <li><strong>Machine Learning</strong></li>
             <li><strong>Frontend Development</strong></li>
+          </ul>
+        </div>
+
+        <div className="reminder-card three-d-effect">
+          <h3>⏳ Task Reminders</h3>
+          <div className="task-input">
+            <input
+              type="text"
+              placeholder="Enter a task..."
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+            />
+            <button className="add-task-btn" onClick={addTask}>Add Task</button>
+          </div>
+          <ul className="task-list">
+            {tasks.map((task, index) => (
+              <li key={index} className="task-item">
+                {task}
+                <button className="remove-task-btn" onClick={() => removeTask(index)}>❌</button>
+              </li>
+            ))}
           </ul>
         </div>
 
