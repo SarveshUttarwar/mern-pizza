@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Papa from "papaparse";
 
 // Initial People Data
 const initialPeople = [
@@ -9,11 +10,12 @@ const initialPeople = [
   { id: 5, name: "Emma Wilson", email: "emma@example.com", department: "IT", role: "Manager", empId: "12302005" },
 ];
 
-// List of Departments (9 Departments)
+// List of Departments & Roles
 const departments = ["HR", "IT", "Sales", "Marketing", "Finance", "Logistics", "R&D", "Customer Support", "Operations"];
-const roles = ["Manager", "Operator"];
+const roles = ["Admin", "User", "Super User"];
 
-// Mapping Departments to Warehouse IDs (2-Digit Code)
+
+// Mapping Departments to Warehouse IDs
 const warehouseIds = {
   HR: "01",
   IT: "02",
@@ -32,13 +34,13 @@ const IAMPage = () => {
   const [newEmail, setNewEmail] = useState("");
   const [newDepartment, setNewDepartment] = useState(departments[0]);
   const [newRole, setNewRole] = useState(roles[0]);
-  const [customEmpNum, setCustomEmpNum] = useState(""); // User enters last 3 digits
+  const [customEmpNum, setCustomEmpNum] = useState("");
 
   // Function to Generate Employee ID
   const generateEmployeeId = (department, empNum) => {
-    const orgId = "123"; // Fixed Organization ID
-    const warehouseId = warehouseIds[department] || "00"; // Get Warehouse ID from Mapping
-    const empNumber = empNum.padStart(3, "0"); // Ensure 3 Digits
+    const orgId = "123";
+    const warehouseId = warehouseIds[department] || "00";
+    const empNumber = empNum.padStart(3, "0");
     return `${orgId}${warehouseId}${empNumber}`;
   };
 
@@ -47,19 +49,81 @@ const IAMPage = () => {
     if (newName && newEmail && customEmpNum.length === 3) {
       const newPerson = {
         id: people.length + 1,
+        id: Date.now(),
         name: newName,
         email: newEmail,
         department: newDepartment,
         role: newRole,
         empId: generateEmployeeId(newDepartment, customEmpNum),
       };
-      setPeople([...people, newPerson]);
+      setPeople(prevPeople => [...prevPeople, newPerson]);
       setNewName("");
       setNewEmail("");
-      setCustomEmpNum(""); // Reset input field after adding
+      setCustomEmpNum("");
     } else {
       alert("Please enter a valid 3-digit Employee Number.");
     }
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (result) => {
+          const newPeople = result.data // Changed variable name to newPeople
+            .filter(row =>
+              row.Name &&
+              row.Email &&
+              row.Department &&
+              row.Role &&
+              row["Employee ID"]
+            )
+            .map((row, index) => {
+              const empIdDigits = String(row["Employee ID"]).slice(-3).padStart(3, "0");
+
+              return {
+                id: Date.now() + index,
+                name: row.Name,
+                email: row.Email,
+                department: row.Department,
+                role: row.Role,
+                empId: generateEmployeeId(row.Department, empIdDigits),
+              };
+            });
+
+          if (newPeople.length > 0) { // Changed to newPeople
+            setPeople(prev => [...prev, ...newPeople]); // Changed to newPeople
+          } else {
+            alert("No valid records found in CSV");
+          }
+
+          event.target.value = "";
+        },
+        error: (err) => {
+          console.error('CSV Error:', err);
+          alert('Error parsing CSV file');
+        }
+      });
+    }
+  };
+
+  // Function to Download CSV
+  const handleDownloadCSV = () => {
+    const csvData = [
+      ["Name", "Email", "Department", "Role", "Employee ID"],
+      ...people.map((p) => [p.name, p.email, p.department, p.role, p.empId]),
+    ];
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "employees.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   // Function to Get Role Counts for Each Department
@@ -72,39 +136,24 @@ const IAMPage = () => {
 
   return (
     <div className="container">
-      {/* Page Title */}
       <h1 className="page-title">IAM - Identity and Access Management</h1>
 
-      {/* People Management Section */}
+      {/* Add Person Form */}
       <div className="card">
         <h2 className="card-title">👥 People Management</h2>
-
-        {/* Add Person Form */}
         <div className="form-section">
-          <h3 className="form-title">➕ Add New Person</h3>
+
           <div className="input-group">
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="input-field"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="input-field"
-              value={newEmail}
-              onChange={(e) => setNewEmail(e.target.value)}
-            />
-            <select className="input-field" value={newDepartment} onChange={(e) => setNewDepartment(e.target.value)}>
+            <input type="text" placeholder="Full Name" value={newName} onChange={(e) => setNewName(e.target.value)} />
+            <input type="email" placeholder="Email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
+            <select value={newDepartment} onChange={(e) => setNewDepartment(e.target.value)}>
               {departments.map((dept) => (
                 <option key={dept} value={dept}>
                   {dept}
                 </option>
               ))}
             </select>
-            <select className="input-field" value={newRole} onChange={(e) => setNewRole(e.target.value)}>
+            <select value={newRole} onChange={(e) => setNewRole(e.target.value)}>
               {roles.map((role) => (
                 <option key={role} value={role}>
                   {role}
@@ -113,22 +162,27 @@ const IAMPage = () => {
             </select>
             <input
               type="text"
-              placeholder="Last 3 Digits of Employee ID"
-              className="input-field"
+              placeholder="Last 3 digits on emp id"
               value={customEmpNum}
               maxLength="3"
-              onChange={(e) => setCustomEmpNum(e.target.value.replace(/\D/, ""))} // Allow only numbers
+              onChange={(e) => setCustomEmpNum(e.target.value.replace(/\D/, ""))}
             />
           </div>
-          <button className="add-button" onClick={handleAddPerson}>
-            Add Person
-          </button>
+          <button onClick={handleAddPerson}>Add Person</button>
+        </div>
+
+        <div className="file-upload-container">
+          <label className="custom-file-upload">
+            <input type="file" accept=".csv" onChange={handleFileUpload} />
+            Upload CSV
+          </label>
+          <button onClick={handleDownloadCSV}>Download CSV</button>
         </div>
 
         {/* People List */}
         <div className="table-container">
           <h3 className="section-title">📋 Employee List</h3>
-          <table className="styled-table">
+          <table>
             <thead>
               <tr>
                 <th>Name</th>
@@ -144,8 +198,8 @@ const IAMPage = () => {
                   <td>{person.name}</td>
                   <td>{person.email}</td>
                   <td>{person.department}</td>
-                  <td className="role-cell">{person.role}</td>
-                  <td className="emp-id">{person.empId}</td>
+                  <td>{person.role}</td>
+                  <td>{person.empId}</td>
                 </tr>
               ))}
             </tbody>
@@ -153,18 +207,18 @@ const IAMPage = () => {
         </div>
       </div>
 
-      {/* Department Overview with Analytics */}
+      {/* Department Overview */}
       <div className="card">
         <h2 className="card-title">🏢 Department Overview</h2>
         <div className="department-grid">
-          {departments.map((dept, index) => {
+          {departments.map((dept) => {
             const { managers, operators } = getRoleCounts(dept);
             return (
-              <div key={index} className="department-card">
+              <div key={dept} className="department-card">
                 <h3>{dept}</h3>
-                <p>✅ <b>{people.filter((p) => p.department === dept).length}</b> Employees</p>
-                <p>👔 <b>{managers}</b> Managers</p>
-                <p>⚙️ <b>{operators}</b> Operators</p>
+                <p>✅ {managers + operators} Employees</p>
+                <p>👔 {managers} Managers</p>
+                <p>⚙️ {operators} Operators</p>
               </div>
             );
           })}
