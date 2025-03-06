@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../App.css"; // Import global styles
 
 function ImportData() {
-  // State for selected Data Table
   const [selectedTable, setSelectedTable] = useState("");
   const [importLog, setImportLog] = useState("");
+  const fileInputRef = useRef(null);
 
   // Dropdown options
   const dataTableOptions = [
@@ -29,6 +29,29 @@ function ImportData() {
     const selectedValue = event.target.value;
     setSelectedTable(selectedValue);
     setImportLog(logMessages[selectedValue] || "");
+  };
+
+  // Handle file import button click
+  const handleImportClick = () => {
+    fileInputRef.current.click(); // Open file explorer
+  };
+
+  // Handle file selection
+  const handleFileChange = (event) => {
+    if (event.target.files.length > 0) {
+      alert(`Selected file: ${event.target.files[0].name}`);
+    }
+  };
+
+  // Simulate file download
+  const handleDownloadClick = () => {
+    const element = document.createElement("a");
+    const file = new Blob(["Template data"], { type: "text/csv" });
+    element.href = URL.createObjectURL(file);
+    element.download = "Template.csv";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
 
   return (
@@ -66,7 +89,9 @@ function ImportData() {
             {/* Buttons */}
             <div className="btn-group">
               <button className="cancel-btn">Cancel</button>
-              <button className="save-btn">Save</button>
+              <button className="save-btn" onClick={handleDownloadClick}>
+                Download
+              </button>
             </div>
           </div>
         </div>
@@ -93,8 +118,18 @@ function ImportData() {
             {/* Buttons */}
             <div className="btn-group">
               <button className="cancel-btn">Cancel</button>
-              <button className="save-btn">Save</button>
+              <button className="save-btn" onClick={handleImportClick}>
+                Import
+              </button>
             </div>
+
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
           </div>
         </div>
       </div>
