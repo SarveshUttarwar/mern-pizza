@@ -248,16 +248,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
 import "../App.css";
 
-const availableMetrics = [
-  "Adjusted Demand",
-  "Consensus Demand",
-  "Baseline Forecast",
-  "Actual Sale",
-  "PY_1",
-  "PY_2",
-  "PY_3",
-];
-
+const availableMetrics = ["Actual Sale", "Baseline Forecast"];
 const itemsOptions = ["Consumer", "Fashion", "Food", "Pharma", "Transport", "Heavy Industry"];
 const locationsOptions = ["Area", "City", "State", "Country"];
 const customersOptions = ["Online", "Offline"];
@@ -281,62 +272,63 @@ const PlannerWorkbench = () => {
 
   // Handle time bucket selection
   const handleTimeBucketChange = (e) => {
-    const bucket = e.target.value;
-    setTimeBucket(bucket);
-
-    let periodSize = 14; // Default to 14 days
-    if (bucket === "Weekly") periodSize = 7;
-    if (bucket === "Monthly") periodSize = 30;
-
-    const newData = {};
-    availableMetrics.forEach((metric) => {
-      newData[metric] = generateRandomData(periodSize);
-    });
-    setTableData(newData);
+    setTimeBucket(e.target.value);
   };
 
-  // Effect to render the graph when data updates
+  // Handle date selection and update chart data
   useEffect(() => {
-    if (tableData && chartRef.current) {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
+    if (startDate && endDate) {
+      const duration = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
+      if (duration > 0) {
+        const actualStartDate = new Date(startDate);
+        actualStartDate.setDate(actualStartDate.getDate() - duration);
+
+        const actualLabels = Array.from({ length: duration }, (_, i) =>
+          new Date(actualStartDate.getTime() + i * 86400000).toISOString().split("T")[0]
+        );
+
+        const predictedLabels = Array.from({ length: duration }, (_, i) =>
+          new Date(new Date(startDate).getTime() + i * 86400000).toISOString().split("T")[0]
+        );
+
+        const newData = {
+          "Actual Sale": generateRandomData(duration),
+          "Baseline Forecast": generateRandomData(duration),
+        };
+
+        setTableData({ labels: predictedLabels, values: newData });
+
+        if (chartRef.current) {
+          if (chartInstance.current) {
+            chartInstance.current.destroy();
+          }
+
+          const ctx = chartRef.current.getContext("2d");
+
+          chartInstance.current = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: [...actualLabels, ...predictedLabels],
+              datasets: [
+                {
+                  label: "Actual Demand",
+                  data: [...newData["Actual Sale"], ...Array(duration).fill(null)],
+                  borderColor: "blue",
+                  fill: false,
+                },
+                {
+                  label: "Predicted Demand",
+                  data: [...Array(duration).fill(null), ...newData["Baseline Forecast"]],
+                  borderColor: "red",
+                  fill: false,
+                },
+              ],
+            },
+          });
+        }
       }
-
-      const ctx = chartRef.current.getContext("2d");
-
-      // Define labels dynamically
-      const labels = Array.from(
-        { length: Object.values(tableData)[0]?.length || 14 },
-        (_, i) => `Day ${i + 1}`
-      );
-
-      // Actual vs Predicted split logic
-      const splitIndex = Math.floor(labels.length / 2);
-      const actualLabels = labels.slice(0, splitIndex);
-      const predictedLabels = labels.slice(splitIndex);
-
-      chartInstance.current = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Actual Demand",
-              data: tableData["Actual Sale"].slice(0, splitIndex),
-              borderColor: "blue",
-              fill: false,
-            },
-            {
-              label: "Predicted Demand",
-              data: tableData["Baseline Forecast"].slice(splitIndex),
-              borderColor: "red",
-              fill: false,
-            },
-          ],
-        },
-      });
     }
-  }, [tableData]);
+  }, [startDate, endDate]);
 
   return (
     <div className="planner-container">
@@ -386,33 +378,37 @@ const PlannerWorkbench = () => {
           <option>14 Days</option>
           <option>Monthly</option>
         </select>
+
         <label>Start Date:</label>
         <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+
         <label>End Date:</label>
         <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
       </div>
 
-      {/* Table Display */}
+      {/* Table Display (Updated for Metrics) */}
       {tableData && (
         <div className="data-table card">
           <table>
             <thead>
               <tr>
                 <th>Metrics</th>
-                {Object.keys(tableData["Actual Sale"]).map((_, i) => (
-                  <th key={i}>Day {i + 1}</th>
+                {tableData.labels.map((date, index) => (
+                  <th key={index}>{date}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {Object.entries(tableData).map(([metric, values]) => (
-                <tr key={metric}>
-                  <td>{metric}</td>
-                  {values.map((value, index) => (
-                    <td key={index}>{value}</td>
-                  ))}
-                </tr>
-              ))}
+              {["Adjusted Demand", "Consensus Demand", "Statistical Forecast", "Actual Sales", "PY_1", "PY_2", "PY_3"].map(
+                (metric, index) => (
+                  <tr key={index}>
+                    <td>{metric}</td>
+                    {tableData.labels.map((_, i) => (
+                      <td key={i}>{Math.floor(Math.random() * 10000) + 1000}</td> // Placeholder random data
+                    ))}
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>
@@ -428,4 +424,3 @@ const PlannerWorkbench = () => {
 };
 
 export default PlannerWorkbench;
-

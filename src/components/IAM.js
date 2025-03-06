@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
-
+ 
 // Initial People Data
 const initialPeople = [
   { id: 1, name: "Alice Johnson", email: "alice@example.com", department: "HR", role: "Manager", empId: "12301001" },
@@ -9,12 +9,12 @@ const initialPeople = [
   { id: 4, name: "David Lee", email: "david@example.com", department: "HR", role: "Operator", empId: "12301004" },
   { id: 5, name: "Emma Wilson", email: "emma@example.com", department: "IT", role: "Manager", empId: "12302005" },
 ];
-
+ 
 // List of Departments & Roles
 const departments = ["HR", "IT", "Sales", "Marketing", "Finance", "Logistics", "R&D", "Customer Support", "Operations"];
 const roles = ["Admin", "User", "Super User"];
-
-
+ 
+ 
 // Mapping Departments to Warehouse IDs
 const warehouseIds = {
   HR: "01",
@@ -27,7 +27,7 @@ const warehouseIds = {
   "Customer Support": "08",
   Operations: "09",
 };
-
+ 
 const IAMPage = () => {
   const [people, setPeople] = useState(initialPeople);
   const [newName, setNewName] = useState("");
@@ -35,7 +35,7 @@ const IAMPage = () => {
   const [newDepartment, setNewDepartment] = useState(departments[0]);
   const [newRole, setNewRole] = useState(roles[0]);
   const [customEmpNum, setCustomEmpNum] = useState("");
-
+ 
   // Function to Generate Employee ID
   const generateEmployeeId = (department, empNum) => {
     const orgId = "123";
@@ -43,7 +43,7 @@ const IAMPage = () => {
     const empNumber = empNum.padStart(3, "0");
     return `${orgId}${warehouseId}${empNumber}`;
   };
-
+ 
   // Function to Add a New Person
   const handleAddPerson = () => {
     if (newName && newEmail && customEmpNum.length === 3) {
@@ -64,7 +64,7 @@ const IAMPage = () => {
       alert("Please enter a valid 3-digit Employee Number.");
     }
   };
-
+ 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -82,7 +82,7 @@ const IAMPage = () => {
             )
             .map((row, index) => {
               const empIdDigits = String(row["Employee ID"]).slice(-3).padStart(3, "0");
-
+ 
               return {
                 id: Date.now() + index,
                 name: row.Name,
@@ -92,13 +92,13 @@ const IAMPage = () => {
                 empId: generateEmployeeId(row.Department, empIdDigits),
               };
             });
-
+ 
           if (newPeople.length > 0) { // Changed to newPeople
             setPeople(prev => [...prev, ...newPeople]); // Changed to newPeople
           } else {
             alert("No valid records found in CSV");
           }
-
+ 
           event.target.value = "";
         },
         error: (err) => {
@@ -108,7 +108,7 @@ const IAMPage = () => {
       });
     }
   };
-
+ 
   // Function to Download CSV
   const handleDownloadCSV = () => {
     const csvData = [
@@ -125,7 +125,7 @@ const IAMPage = () => {
     a.click();
     document.body.removeChild(a);
   };
-
+ 
   // Function to Get Role Counts for Each Department
   const getRoleCounts = (dept) => {
     return {
@@ -133,16 +133,16 @@ const IAMPage = () => {
       operators: people.filter((p) => p.department === dept && p.role === "Operator").length,
     };
   };
-
+ 
   return (
     <div className="container">
       <h1 className="page-title">IAM - Identity and Access Management</h1>
-
+ 
       {/* Add Person Form */}
       <div className="card">
         <h2 className="card-title">👥 People Management</h2>
         <div className="form-section">
-
+ 
           <div className="input-group">
             <input type="text" placeholder="Full Name" value={newName} onChange={(e) => setNewName(e.target.value)} />
             <input type="email" placeholder="Email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
@@ -170,7 +170,7 @@ const IAMPage = () => {
           </div>
           <button onClick={handleAddPerson}>Add Person</button>
         </div>
-
+ 
         <div className="file-upload-container">
           <label className="custom-file-upload">
             <input type="file" accept=".csv" onChange={handleFileUpload} />
@@ -178,7 +178,7 @@ const IAMPage = () => {
           </label>
           <button onClick={handleDownloadCSV}>Download CSV</button>
         </div>
-
+ 
         {/* People List */}
         <div className="table-container">
           <h3 className="section-title">📋 Employee List</h3>
@@ -206,7 +206,7 @@ const IAMPage = () => {
           </table>
         </div>
       </div>
-
+ 
       {/* Department Overview */}
       <div className="card">
         <h2 className="card-title">🏢 Department Overview</h2>
@@ -227,5 +227,7 @@ const IAMPage = () => {
     </div>
   );
 };
-
+ 
 export default IAMPage;
+ 
+ 
