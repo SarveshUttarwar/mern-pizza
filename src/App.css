@@ -535,6 +535,7 @@
 .settings-card {
   flex: 1;
   min-width: 250px;
+  flex-wrap: nowrap;
   padding: 15px;
   background: #fff;
   border-radius: 8px;
@@ -556,7 +557,7 @@
 
 .settings-card input,
 .settings-card select {
-  width: 100%;
+  width: 20%;
   padding: 8px;
   margin-top: 5px;
   border: 1px solid #ccc;
@@ -1431,7 +1432,7 @@ td input[type="checkbox"] {
 }
 
 .input-group input[type="text"]:last-child {
-  font-family:;
+  
 }
 
 button {
