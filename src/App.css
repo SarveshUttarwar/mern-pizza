@@ -759,6 +759,7 @@ input[type="number"] {
   display: flex;
   align-items: center;
   gap: 10px;
+  background-color: #1976d2 
 }
  
 /* Labels */
@@ -791,6 +792,15 @@ input[type="number"] {
   font-weight: bold;
   color: #333;
 }
+
+.time-horizon h1{
+  font-size: 22px;
+  font-weight: bold;
+  color: #001f3f; /* Dark Blue */
+  text-align: center;
+  padding: 10px;
+
+} 
  
 /* Styled Dropdown & Date Inputs */
 .time-horizon select,

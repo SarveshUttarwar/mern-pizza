@@ -88,11 +88,12 @@ const PlannerWorkbench = () => {
       <h2 className="demand-plan-title">Demand Plan</h2>
 
       {/* Display Settings */}
-      <div className="display-settings card">
-        <h4>Display Settings</h4>
+      
+      <div className="time-horizon card">
+        <h1>Display Settings</h1>
         <label>All Items:</label>
         <select value={selectedItem} onChange={(e) => setSelectedItem(e.target.value)}>
-          <option value="All Items">All Items</option>
+          <option value="All Items">Items</option>
           {itemsOptions.map((item, index) => (
             <option key={index} value={item}>
               {item}
@@ -102,7 +103,7 @@ const PlannerWorkbench = () => {
 
         <label>All Locations:</label>
         <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
-          <option value="All Locations">All Locations</option>
+          <option value="All Locations">Locations</option>
           {locationsOptions.map((location, index) => (
             <option key={index} value={location}>
               {location}
@@ -112,7 +113,7 @@ const PlannerWorkbench = () => {
 
         <label>All Customers:</label>
         <select value={selectedCustomer} onChange={(e) => setSelectedCustomer(e.target.value)}>
-          <option value="All Customers">All Customers</option>
+          <option value="All Customers">Customers</option>
           {customersOptions.map((customer, index) => (
             <option key={index} value={customer}>
               {customer}
@@ -120,11 +121,12 @@ const PlannerWorkbench = () => {
           ))}
         </select>
       </div>
+      
 
       {/* Time Horizon Selection */}
       <div className="time-horizon card">
-        <h4>Time Horizon</h4>
-        <label>Time Bucket:</label>
+        <h1>Time Horizon</h1>
+        <label>     Time Bucket:</label>
         <select value={timeBucket} onChange={handleTimeBucketChange}>
           <option value="">Select</option>
           <option>Weekly</option>
