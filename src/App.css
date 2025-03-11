@@ -742,9 +742,28 @@ input[type="number"] {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.7);
-  flex: 1;
+  /* flex: 1; */
 }
  
+/* Card Header */
+.card-header {
+  font-size: 20px;
+  font-weight: bold;
+  color: #001f3f; /* Dark Blue */
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Card Body */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
 /* Display Settings */
 .display-settings {
   display: flex;
@@ -752,6 +771,7 @@ input[type="number"] {
   gap: 20px;
   font-weight: bold;
   color: #333;
+  font-size: 12px;
 }
  
 /* Dropdown Sections */
@@ -783,7 +803,7 @@ input[type="number"] {
  
 /* Time Horizon Section */
 .time-horizon {
-  display: flex;
+  /* display: flex; */
   align-items: center;
   gap: 15px;
 }
@@ -794,11 +814,11 @@ input[type="number"] {
 }
 
 .time-horizon h1{
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: #001f3f; /* Dark Blue */
-  text-align: center;
-  padding: 10px;
+  text-align: left;
+  padding: px;
 
 } 
  
