@@ -297,8 +297,13 @@
 
 
 /* ======================= IMPORT PAGE STYLES ======================= */
+
+/* ======================= IMPORT PAGE STYLES ======================= */
+
+/* Main container */
 .import-data-container {
   padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
 /* Title */
@@ -322,6 +327,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: 0.3s;
+  color: white;
 }
 
 .action-btn:hover {
@@ -341,7 +347,7 @@
   padding: 15px;
   border-radius: 8px;
   width: 48%;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* Added Shadow */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .template-title {
@@ -365,10 +371,10 @@
   color: black;
 }
 
-/* === Dropdown Styling (Dark Blue) === */
+/* Dropdown Styling */
 .dropdown {
   padding: 6px 10px;
-  background-color: #001F3F; /* Dark Blue */
+  background-color: #001F3F;
   color: white;
   border: none;
   border-radius: 5px;
@@ -422,7 +428,228 @@
   padding: 15px;
   margin-top: 20px;
   border-radius: 8px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Added Shadow */
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* === Mandatory Fields Section === */
+.mandatory-fields {
+  margin-top: 20px;
+  padding: 10px;
+  border-left: 5px solid #dc3545;
+  background-color: #f8d7da;
+  color: #721c24;
+  font-weight: bold;
+}
+
+.mandatory-fields ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.mandatory-fields li {
+  font-size: 14px;
+}
+
+.asterisk {
+  color: red;
+  font-size: 18px;
+  margin-left: 5px;
+}
+
+/* === Imported Data Table === */
+.imported-data-table {
+  margin-top: 20px;
+}
+
+.imported-data-table h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Table Styling */
+.table-container {
+  overflow-x: auto;
+  max-height: 400px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Editable Input Fields */
+input[type="text"] {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Upload Data Button */
+.upload-btn {
+  margin-top: 15px;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  background-color: #218838;
+}
+
+/* === Column Selection Section === */
+.column-selection {
+  margin-top: 20px;
+}
+
+.column-selection h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* === Available Columns Section === */
+.available-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #bdc3c7;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #001F3F;
+}
+
+.columns-container {
+  display: flex;
+  flex-wrap: wrap; /* ✅ Allows wrapping to next line */
+  gap: 10px; /* ✅ Space between items */
+  justify-content: flex-start; /* ✅ Align items to the start */
+  max-width: 100%; /* ✅ Prevents overflow */
+}
+
+.column-item {
+  background-color:#001F3F;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  display: flex;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* === Column Mapping Section === */
+.mapping-section {
+  margin-top: 20px;
+}
+
+.mapping-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.mapping-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #001F3F;
+  padding: 8px 12px;
+  border-radius: 5px;
+  color: white;
+}
+
+.mapping-dropdown {
+  padding: 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #001F3F;
+  color: white;
+  cursor: pointer;
+}
+
+/* === Omit Columns Section === */
+.omit-columns {
+  margin-top: 20px;
+}
+
+.omit-columns h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Make the selected options appear horizontally */
+.selected-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background-color: #222;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid red;
+}
+
+.selected-column {
+  background-color: #dc3545;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap; /* Ensures text stays in one line */
+}
+
+.selected-column .remove-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* === Success & Error Messages === */
+.success-message {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #dc3545;
+  font-weight: bold;
 }
 
 

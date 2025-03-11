@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
- 
+import "../App.css"
 // Initial People Data
 const initialPeople = [
   { id: 1, name: "Alice Johnson", email: "alice@example.com", department: "HR", role: "Manager", empId: "12301001" },

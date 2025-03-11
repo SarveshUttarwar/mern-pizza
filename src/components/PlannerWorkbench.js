@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
-import "../App.css";
-
+import "../App.css"
 const availableMetrics = ["Actual Sale", "Baseline Forecast"];
 const itemsOptions = ["Consumer", "Fashion", "Food", "Pharma", "Transport", "Heavy Industry"];
 const locationsOptions = ["Area", "City", "State", "Country"];
