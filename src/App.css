@@ -692,6 +692,8 @@ input[type="text"]:focus {
   width: 100%;
 }
 
+
+
 .date-range span {
   display: block;
   margin-top: 5px;
@@ -703,10 +705,22 @@ input[type="text"]:focus {
   max-width: 1500px;
   margin: 20px auto;
   padding: 30px;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.measures-dropdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between dropdowns */
+}
+
+.measure-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between checkbox and dropdown */
 }
 
 /* Titles */
@@ -748,7 +762,8 @@ input[type="text"]:focus {
   border-radius: 8px;
   border: 1px solid #eee;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  font-size: 13px;
+  font-size: 20px;
+  
 }
 
 .settings-card h5 {
@@ -824,6 +839,7 @@ input[type="number"] {
   cursor: pointer;
   font-size: 14px;
   transition: opacity 0.2s;
+  
 }
 
 .add-button {
@@ -864,7 +880,7 @@ input[type="number"] {
   font-size: 13px;
   font-weight: normal;
   width: 80px;
-  height: 36px;
+  height: 30px;
   border: none;
   border-radius: 3px;
   cursor: pointer;
@@ -901,7 +917,7 @@ input[type="number"] {
   font-size: 13px;
   font-weight: normal;
   width: 80px;
-  height: 36px;  /* Matching height with Add button */
+  height: 30px;  /* Matching height with Add button */
   border: none;
   border-radius: 3px;
   cursor: pointer;
@@ -922,6 +938,52 @@ input[type="number"] {
   border: 1px solid #ccc;
   border-radius: 3px;
   background-color: white;
+}
+
+/* Run Model Card - Add these at the end of your CSS file */
+.run-model-card {
+  
+  padding: 25px;
+  border-radius: 8px;
+  margin-top: 30px;
+  border: 1px solid #eee;
+  text-align: center;
+}
+
+.run-model-card h4 {
+  color: #001F3F;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+}
+
+.run-button {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #28a745;
+  color: white;
+}
+
+.run-button.active:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.run-button.disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.validation-message {
+  color: #dc3545;
+  margin-top: 10px;
+  font-size: 0.9em;
 }
 
 /*
@@ -969,9 +1031,28 @@ input[type="number"] {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.7);
-  flex: 1;
+  /* flex: 1; */
 }
  
+/* Card Header */
+.card-header {
+  font-size: 20px;
+  font-weight: bold;
+  color: #001f3f; /* Dark Blue */
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Card Body */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+
 /* Display Settings */
 .display-settings {
   display: flex;
@@ -979,6 +1060,7 @@ input[type="number"] {
   gap: 20px;
   font-weight: bold;
   color: #333;
+  font-size: 12px;
 }
  
 /* Dropdown Sections */
@@ -1010,7 +1092,7 @@ input[type="number"] {
  
 /* Time Horizon Section */
 .time-horizon {
-  display: flex;
+  /* display: flex; */
   align-items: center;
   gap: 15px;
 }
@@ -1021,11 +1103,11 @@ input[type="number"] {
 }
 
 .time-horizon h1{
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: #001f3f; /* Dark Blue */
-  text-align: center;
-  padding: 10px;
+  text-align: left;
+  padding: px;
 
 } 
  

@@ -88,40 +88,40 @@ const PlannerWorkbench = () => {
       <h2 className="demand-plan-title">Demand Plan</h2>
 
       {/* Display Settings */}
-      
+
       <div className="time-horizon card">
-        <h1>Display Settings</h1>
-        <label>All Items:</label>
-        <select value={selectedItem} onChange={(e) => setSelectedItem(e.target.value)}>
-          <option value="All Items">Items</option>
-          {itemsOptions.map((item, index) => (
-            <option key={index} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
+          <h1>Display Settings</h1>
+          <label>All Items:</label>
+          <select value={selectedItem} onChange={(e) => setSelectedItem(e.target.value)}>
+            <option value="All Items">Items</option>
+            {itemsOptions.map((item, index) => (
+              <option key={index} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
 
-        <label>All Locations:</label>
-        <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
-          <option value="All Locations">Locations</option>
-          {locationsOptions.map((location, index) => (
-            <option key={index} value={location}>
-              {location}
-            </option>
-          ))}
-        </select>
+          <label style={{marginLeft: "105px"}}>All Locations:</label>
+          <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
+            <option value="All Locations">Locations</option>
+            {locationsOptions.map((location, index) => (
+              <option key={index} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
 
-        <label>All Customers:</label>
-        <select value={selectedCustomer} onChange={(e) => setSelectedCustomer(e.target.value)}>
-          <option value="All Customers">Customers</option>
-          {customersOptions.map((customer, index) => (
-            <option key={index} value={customer}>
-              {customer}
-            </option>
-          ))}
-        </select>
+          <label style={{marginLeft: "105px"}}>All Customers:                                   </label>
+          <select value={selectedCustomer} onChange={(e) => setSelectedCustomer(e.target.value)} >
+            <option value="All Customers">Customers</option>
+            {customersOptions.map((customer, index) => (
+              <option key={index} value={customer}>
+                {customer}
+              </option>
+            ))}
+          </select>
       </div>
-      
+
 
       {/* Time Horizon Selection */}
       <div className="time-horizon card">
@@ -134,11 +134,11 @@ const PlannerWorkbench = () => {
           <option>Monthly</option>
         </select>
 
-        <label>Start Date:</label>
-        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+        <label style={{marginLeft: "74.9px"}}>Start Date:</label>
+        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={{marginLeft: "10px"}}/>
 
-        <label>End Date:</label>
-        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+        <label style={{marginLeft: "112px"}}>End Date:</label>
+        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{marginLeft: "10px"}} />
       </div>
 
       {/* Table Display (Updated for Metrics) */}
