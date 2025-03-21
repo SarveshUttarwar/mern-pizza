@@ -732,6 +732,28 @@ input[type="text"]:focus {
   text-align: center;
 }
 
+.top-buttons {
+  display: flex;
+  justify-content: flex-end; /* Aligns button to the right */
+  margin-bottom: 20px; /* Adds spacing below */
+}
+
+.reset-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  background: #dc3545;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.reset-button:hover {
+  opacity: 0.9;
+}
+
+
 /* Dropdown Styling */
 .forecast-details select {
   width: 100%;

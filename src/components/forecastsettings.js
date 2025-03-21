@@ -38,6 +38,21 @@ const ForecastSettings = () => {
         }
     };
 
+    const resetForm = () => {
+
+        setTimeBucket("Daily");
+        setStartDate("");
+        setEndDate("");
+        setForecastHorizon("0");
+        setForecastLock("0");
+        setMeasures([{ id: Date.now(), value: "Sales History", selected: false }]);
+        setGranularity("Product Code");
+        setAggregation("Sum");
+        setForecastMethod("Best Fit");
+        setShowCheckboxes(false);
+    };
+
+
     const handleRunModel = () => {
         const config = {
             model: selectedModel,
@@ -74,28 +89,36 @@ const ForecastSettings = () => {
     }, [selectedModel, startDate, endDate, forecastHorizon, forecastLock, measures]);
 
     return (
+
         <div className="forecast-container">
             <h3 className="forecast-title">Forecast Settings</h3>
 
             <div className="forecast-details">
-                <label style={{ fontSize: "18px"}}><strong>Model Name :</strong></label>
+                <label style={{ fontSize: "18px" }}><strong>Model Name :</strong></label>
                 <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
                     <option value="">Select a Model</option>
                     {models.map((model, index) => (
                         <option key={index} value={model.name}>{model.name}</option>
                     ))}
                 </select>
+
+
             </div>
 
-        
+
+
+
 
             {selectedModel && (
                 <>
+                    <div className="top-buttons">
+                        <button className="reset-button" onClick={resetForm}>Reset</button>
+                    </div>
                     <div className="time-settings">
-                    <h4 style={{ fontSize: "18px"}}><strong>Time Settings :</strong></h4>
+                        <h4 style={{ fontSize: "18px" }}><strong>Time Settings :</strong></h4>
                         <div className="settings-card-group" style={{ display: "flex", gap: "10px" }}>
                             <div className="settings-card" style={{ flex: "0.9" }}>
-                                <h5 style={{ fontSize: "16px"}}>Time Bucket</h5>
+                                <h5 style={{ fontSize: "16px" }}>Time Bucket</h5>
                                 <div className="input-group">
                                     <select style={{ width: "120px" }} value={timeBucket} onChange={(e) => setTimeBucket(e.target.value)}>
                                         <option value="Daily">Daily</option>
@@ -106,7 +129,7 @@ const ForecastSettings = () => {
                             </div>
 
                             <div className="settings-card" style={{ flex: "1" }}>
-                                <h5 style={{ fontSize: "16px"}}>Historical Horizon</h5>
+                                <h5 style={{ fontSize: "16px" }}>Historical Horizon</h5>
                                 <div className="input-group">
                                     <label>Start Date:</label>
                                     <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
@@ -118,7 +141,7 @@ const ForecastSettings = () => {
                             </div>
 
                             <div className="settings-card">
-                                <h5 style={{ fontSize: "16px"}}>Forecast Parameters</h5>
+                                <h5 style={{ fontSize: "16px" }}>Forecast Parameters</h5>
                                 <div className="input-group">
                                     <label>Forecast Horizon:</label>
                                     <input type="number" value={forecastHorizon} onChange={(e) => setForecastHorizon(e.target.value)} />
@@ -131,13 +154,15 @@ const ForecastSettings = () => {
                         </div>
                     </div>
 
+
+
                     <div className="forecast-parameters active">
-                        <h4 style={{ fontSize: "18px"}}><strong>Forecast Parameters :</strong></h4>
+                        <h4 style={{ fontSize: "18px" }}><strong>Forecast Parameters :</strong></h4>
 
                         <div className="forecast-methodology">
                             <div className="dropdown-container">
-                                <label style={{ fontSize: "16px"}}><strong>Granularity:  </strong></label>
-                                <select value={granularity} onChange={(e) => setGranularity(e.target.value)}  style={{ textAlign: "center", textAlignLast: "center" }}>
+                                <label style={{ fontSize: "16px" }}><strong>Granularity:  </strong></label>
+                                <select value={granularity} onChange={(e) => setGranularity(e.target.value)} style={{ textAlign: "center", textAlignLast: "center" }}>
                                     <option value="Product Code">Product Code</option>
                                     <option value="Location Code">Location Code</option>
                                     <option value="Region Code">Region Code</option>
@@ -146,8 +171,8 @@ const ForecastSettings = () => {
                             </div>
 
                             <div className="dropdown-container">
-                                <label style={{ fontSize: "16px"}}><strong>Aggregation Level:  </strong></label>
-                                <select value={aggregation} onChange={(e) => setAggregation(e.target.value)}  style={{ textAlign: "center", textAlignLast: "center"}}>
+                                <label style={{ fontSize: "16px" }}><strong>Aggregation Level:  </strong></label>
+                                <select value={aggregation} onChange={(e) => setAggregation(e.target.value)} style={{ textAlign: "center", textAlignLast: "center" }}>
                                     <option value="Sum">Sum</option>
                                     <option value="Average">Average</option>
                                     <option value="Max">Max</option>
@@ -155,8 +180,8 @@ const ForecastSettings = () => {
                             </div>
 
                             <div className="dropdown-container">
-                                <label style={{ fontSize: "16px"}}><strong>Forecast Methodology: </strong></label>
-                                <select value={forecastMethod} onChange={(e) => setForecastMethod(e.target.value)}  style={{ textAlign: "center", textAlignLast: "center" }}>
+                                <label style={{ fontSize: "16px" }}><strong>Forecast Methodology: </strong></label>
+                                <select value={forecastMethod} onChange={(e) => setForecastMethod(e.target.value)} style={{ textAlign: "center", textAlignLast: "center" }}>
                                     <option value="Best Fit">Best Fit</option>
                                     <option value="Ensemble">Ensemble</option>
                                     <option value="Select From List">Select From List</option>
@@ -166,9 +191,9 @@ const ForecastSettings = () => {
                     </div>
 
                     <div className="input-data-section">
-                        <h4 style={{ fontSize: "18px"}}><strong>Input Data </strong></h4>
+                        <h4 style={{ fontSize: "18px" }}><strong>Input Data </strong></h4>
                         <div className="measures-container">
-                            <label style={{ fontSize: "16px", fontWeight: "bold"}}>Measures:</label>
+                            <label style={{ fontSize: "16px", fontWeight: "bold" }}>Measures:</label>
                             <button className="add-button" onClick={addMeasure}>Add</button>
                             <button className="remove-button" onClick={removeMeasure}>
                                 {showCheckboxes ? 'Remove' : 'Remove'}
@@ -203,18 +228,18 @@ const ForecastSettings = () => {
                             ))}
                         </div>
                         <div className="run-model-card">
-                <h4>Model Execution</h4>
-                <button
-                    className={`run-button ${canRunModel ? 'active' : 'disabled'}`}
-                    onClick={handleRunModel}
-                    disabled={!canRunModel}
-                >
-                    Run Forecasting Model
-                </button>
-                {!canRunModel && (
-                    <p className="validation-message">Please fill all required parameters</p>
-                )}
-            </div>
+                            <h4>Model Execution</h4>
+                            <button
+                                className={`run-button ${canRunModel ? 'active' : 'disabled'}`}
+                                onClick={handleRunModel}
+                                disabled={!canRunModel}
+                            >
+                                Run Forecasting Model
+                            </button>
+                            {!canRunModel && (
+                                <p className="validation-message">Please fill all required parameters</p>
+                            )}
+                        </div>
                     </div>
                 </>
             )}
