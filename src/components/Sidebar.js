@@ -56,15 +56,15 @@ import {
   FaDatabase,
   FaChartBar,
   FaProjectDiagram,
-  FaWrench, // ✅ Added new icon for Planner Workbench
+  FaWrench,
 } from "react-icons/fa";
 import "../App.css";
 
 const menuItems = [
-  { name: "Dashboard", path: "/", icon: <FaTachometerAlt /> },
+  { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> }, // ✅ Changed path from "/" to "/dashboard"
   { name: "Import Data", path: "/import", icon: <FaComments /> },
   { name: "Forecast Settings", path: "/forecast-settings", icon: <FaUsers /> },
-  { name: "Planner Workbench", path: "/planner-workbench", icon: <FaWrench /> }, // ✅ Changed icon for clarity
+  { name: "Planner Workbench", path: "/planner-workbench", icon: <FaWrench /> },
   { name: "Outlier Report", path: "/outlier-report", icon: <FaCogs /> },
   { name: "Master Data", path: "/master-data", icon: <FaDatabase /> },
   { name: "I AM", path: "/iam", icon: <FaChartBar /> },
