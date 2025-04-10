@@ -46,6 +46,9 @@
 
 // export default Sidebar;
 
+// src/components/Sidebar.js
+
+// src/components/Sidebar.js
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -61,7 +64,7 @@ import {
 import "../App.css";
 
 const menuItems = [
-  { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> }, // ✅ Changed path from "/" to "/dashboard"
+  { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> },
   { name: "Import Data", path: "/import", icon: <FaComments /> },
   { name: "Forecast Settings", path: "/forecast-settings", icon: <FaUsers /> },
   { name: "Planner Workbench", path: "/planner-workbench", icon: <FaWrench /> },

@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+/* ======================= GLOBAL STYLES ======================= */
+@import "tailwindcss";
+ 
 /* ======================= GLOBAL STYLES ======================= */
 * {
   margin: 0;
@@ -7,14 +9,14 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
-
+ 
 /* ======================= APP CONTAINER ======================= */
 .app-container {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
-
+ 
 /* ======================= SIDEBAR ======================= */
 .sidebar {
   width: 250px;
@@ -29,18 +31,18 @@
   padding-top: 10px; /* Add spacing */
   overflow-y: auto; /* Scrollable if needed */
 }
-
+ 
 .sidebar::-webkit-scrollbar {
   display: none; /* Hide scrollbar for Chrome/Safari */
 }
-
+ 
 /* Sidebar Menu */
 .sidebar-menu {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
+ 
 /* Sidebar Items */
 .sidebar-item {
   display: flex;
@@ -55,7 +57,7 @@
   gap: 12px; /* Controls spacing between icon and text */
   white-space: nowrap; /* Prevents text from wrapping */
 }
-
+ 
 /* Fix Hover and Active State */
 .sidebar-item:hover,
 .sidebar-item.active {
@@ -63,14 +65,14 @@
   color: #001F3F;
   font-weight: bold;
 }
-
+ 
 /* Sidebar Icons */
 .sidebar-icon {
   font-size: 20px; /* Adjust icon size */
   min-width: 24px; /* Fix width to align text */
   text-align: right;
 }
-
+ 
 /* ======================= MAIN CONTENT ======================= */
 .main-content {
   flex-grow: 1;
@@ -79,7 +81,7 @@
   flex-direction: column;
   height: 100vh;
 }
-
+ 
 /* ======================= MAIN CONTENT ======================= */
 .main-content {
   flex-grow: 1;
@@ -88,7 +90,7 @@
   flex-direction: column;
   height: 100vh;
 }
-
+ 
 /* ======================= MAIN CONTENT ======================= */
 .main-content {
   flex-grow: 1;
@@ -97,7 +99,7 @@
   flex-direction: column;
   height: 100vh;
 }
-
+ 
 /* ======================= NAVBAR ======================= */
 /* Navbar Styles */
 /* Navbar Styles */
@@ -116,13 +118,13 @@
   width: 100%; /* ⬅ Ensures full width */
   z-index: 1000;
 }
-
+ 
 /* 4kast.ai Logo - Left Aligned */
 .navbar-logo {
   font-size: 24px;
   font-weight: bold;
 }
-
+ 
 /* Centered Search Bar */
 .search-bar {
   flex-grow: 1;
@@ -135,7 +137,7 @@
   max-width: 600px;
   top: 8px; /* ⬆ Moves search bar slightly upwards */
 }
-
+ 
 .search-input {
   width: 100%;
   padding: 8px 12px;
@@ -145,7 +147,7 @@
   color: black; /* ⬅ Black text */
   outline: none;
 }
-
+ 
 /* Icons - Right Aligned */
 .navbar-icons {
   display: flex;
@@ -155,7 +157,7 @@
   right: 20px;
   top: 22px; /* ⬆ Moves the icons slightly upwards */
 }
-
+ 
 /* Individual Icon */
 .icon {
   color: white;
@@ -163,26 +165,26 @@
   cursor: pointer;
   position: relative; /* ⬆ Moves each icon a bit up */
 }
-
+ 
 /* User Profile */
 .user-profile {
   display: flex;
   align-items: center;
   gap: 7px;
 }
-
+ 
 .user-icon {
   color: white;
   font-size: 22px;
 }
-
+ 
 .navbar-user {
   color: white;
   font-size: 12px;
   top: -3px;
 }
-
-
+ 
+ 
 /* ======================= CONTENT AREA ======================= */
 .content {
   margin-top: 60px; /* Ensures content is below navbar */
@@ -192,7 +194,7 @@
   overflow-y: auto;
   width: 100%;
 }
-
+ 
 /* ======================= DASHBOARD STYLES ======================= */
 /* Dashboard Container */
 .dashboard {
@@ -731,28 +733,6 @@ input[type="text"]:focus {
   margin-bottom: 30px;
   text-align: center;
 }
-
-.top-buttons {
-  display: flex;
-  justify-content: flex-end; /* Aligns button to the right */
-  margin-bottom: 20px; /* Adds spacing below */
-}
-
-.reset-button {
-  padding: 8px 15px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  background: #dc3545;
-  color: white;
-  transition: opacity 0.2s;
-}
-
-.reset-button:hover {
-  opacity: 0.9;
-}
-
 
 /* Dropdown Styling */
 .forecast-details select {
@@ -1357,7 +1337,6 @@ td input[type="checkbox"] {
   cursor: not-allowed;
   opacity: 0.6;
 }
- 
  
 /* MasterData Component */
 
@@ -2190,8 +2169,12 @@ tr:hover {
 
 /* App.css code for the login screen */
 
+/* App.css code for the login screen */
+ 
+/* App.css code for the login screen */
+ 
 /* Centering the login container */
-
+ 
 html, body {
   height: 100%;
   margin: 0;
@@ -2199,7 +2182,7 @@ html, body {
   justify-content: center;
   align-items: center;
 }
-
+ 
 /* Reset styles to ensure full centering */
 html, body {
   height: 100%;
@@ -2209,7 +2192,7 @@ html, body {
   align-items: center;
   background: linear-gradient(135deg, white 0%, white 100%);
 }
-
+ 
 /* Centering the login container */
 .login-container {
   display: flex;
@@ -2219,7 +2202,7 @@ html, body {
   height: 100vh;
   padding: 1rem;
 }
-
+ 
 /* Styling for the login box */
 .login-box {
   background: white;
@@ -2230,7 +2213,7 @@ html, body {
   max-width: 380px;
   text-align: center;
 }
-
+ 
 /* Title and subtitle */
 .login-title {
   font-size: 1.8rem;
@@ -2238,32 +2221,32 @@ html, body {
   margin-bottom: 0.5rem;
   color: #001F3F;
 }
-
+ 
 .login-subtitle {
   color: #555;
   margin-bottom: 1.5rem;
 }
-
+ 
 /* Form styling */
 .login-form {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
-
+ 
 /* Form group styling */
 .form-group {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
-
+ 
 .form-group label {
   font-weight: 600;
   color: #333;
   margin-bottom: 0.4rem;
 }
-
+ 
 .form-group input {
   padding: 0.75rem;
   border: 1px solid #ccc;
@@ -2271,55 +2254,54 @@ html, body {
   font-size: 1rem;
   transition: border-color 0.3s ease-in-out;
 }
-
+ 
 .form-group input:focus {
   outline: none;
   border-color: #001F3F;
   box-shadow: 0 0 5px rgba(0, 31, 63, 0.3);
 }
-
+ 
 /* Error handling */
 .input-error {
   border-color: #dc3545 !important;
 }
-
+ 
 .error {
   color: #dc3545;
   font-size: 0.85rem;
   margin-top: 0.25rem;
   text-align: left;
 }
-
+ 
 .submit-error {
   text-align: center;
 }
-
+ 
 /* Remember me and forgot password */
 .form-options {
-  display: flex;
+  display: unflex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.9rem;
 }
-
+ 
 .remember-me {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: #555;
 }
-
+ 
 .forgot-password {
   color: #001F3F;
   text-decoration: none;
   font-weight: 500;
 }
-
+ 
 .forgot-password:hover {
   text-decoration: underline;
 }
-
-/* Login button styling */
+ 
 .login-button {
   background: #001F3F;
   color: white;
@@ -2330,12 +2312,12 @@ html, body {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
-
+ 
 .login-button:hover {
   background: #002a5e;
   box-shadow: 0 4px 10px rgba(0, 31, 63, 0.2);
 }
-
+ 
 .login-button:disabled {
   background: #999;
   cursor: not-allowed;

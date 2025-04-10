@@ -14,6 +14,12 @@ function Dashboard() {
     { name: "Apr", value: 130 },
     { name: "May", value: 180 },
     { name: "Jun", value: 200 },
+    { name: "Jul", value: 400 },
+    { name: "Aug", value: 250 },
+    { name: "sep", value: 190 },
+    { name: "oct", value: 400 },
+    { name: "nov", value: 175 },
+    { name: "Dec", value: 100 },
   ];
 
   const barData = [
@@ -21,6 +27,22 @@ function Dashboard() {
     { name: "Product B", sales: 130 },
     { name: "Product C", sales: 280 },
     { name: "Product D", sales: 350 },
+    { name: "Product E", sales: 270 },
+    { name: "Product F", sales: 100 },
+    { name: "Product G", sales: 380 },
+    { name: "Product H", sales: 330 },
+    { name: "Product I", sales: 240 },
+    { name: "Product J", sales: 130 },
+    { name: "Product K", sales: 280 },
+    { name: "Product L", sales: 350 },
+    { name: "Product M", sales: 240 },
+    { name: "Product N", sales: 130 },
+    { name: "Product O", sales: 280 },
+    { name: "Product P", sales: 350 },
+    { name: "Product Q", sales: 240 },
+    { name: "Product R", sales: 130 },
+    { name: "Product S", sales: 280 },
+    { name: "Product T", sales: 350 },
   ];
 
   const scatterData = [
@@ -28,7 +50,13 @@ function Dashboard() {
     { x: 20, y: 50 },
     { x: 30, y: 70 },
     { x: 40, y: 90 },
-    { x: 50, y: 110 },
+    { x: 50, y: 140 },
+    { x: 60, y: 90 },
+    { x: 70, y: 50 },
+    { x: 80, y: 120 },
+    { x: 90, y: 40 },
+    { x: 100, y: 80 },
+    { x: 110, y: 160 },
   ];
 
   const areaData = [
@@ -38,17 +66,37 @@ function Dashboard() {
     { month: "Apr", revenue: 130 },
     { month: "May", revenue: 180 },
     { month: "Jun", revenue: 200 },
+    { month: "Jul", revenue: 90 },
+    { month: "Aug", revenue: 130 },
+    { month: "Sep", revenue: 160 },
+    { month: "Oct", revenue: 190 },
+    { month: "Nov", revenue: 220 },
+    { month: "Dec", revenue: 250 },
   ];
 
   const pieData = [
-    { name: "Category A", value: 400 },
-    { name: "Category B", value: 300 },
-    { name: "Category C", value: 200 },
-    { name: "Category D", value: 100 },
-  ];
-  const COLORS = ["#002855", "#00509E", "#007BFF", "#1A1F71"];
+    { name: "Category A", value: 200 },
+    { name: "Category B", value: 100 },
+    { name: "Category C", value: 600 },
+    { name: "Category D", value: 800 },
+    { name: "Category E", value: 300 },
+    { name: "Category F", value: 900 },
+    { name: "Category G", value: 700 },
+    { name: "Category H", value: 800 },
+    { name: "Category I", value: 600 },
+    { name: "Category J", value: 300 },
+    { name: "Category K", value: 100 },
+    { name: "Category L", value: 1100 },
+    { name: "Category M", value: 600 },
+    { name: "Category N", value: 300 },
+    { name: "Category O", value: 900 },
+    { name: "Category P", value: 100 },
 
-  // Dark Blue Theme for KPI Cards
+  ];
+  const COLORS = ["#002855", "#00509E", "#007BFF", "#1A1F71", "#00BFFF", "#4682B4", "#274472", "#0A1172"];
+
+
+
   const darkBlueShades = ["#002855", "#003F7D", "#00509E", "#007BFF"];
   const [currentColor, setCurrentColor] = useState(darkBlueShades[0]);
   const [index, setIndex] = useState(0);

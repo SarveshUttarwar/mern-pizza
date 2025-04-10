@@ -100,7 +100,6 @@ const PlannerWorkbench = () => {
               </option>
             ))}
           </select>
-
           <label style={{marginLeft: "105px"}}>All Locations:</label>
           <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
             <option value="All Locations">Locations</option>
@@ -141,7 +140,7 @@ const PlannerWorkbench = () => {
         <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{marginLeft: "10px"}} />
       </div>
 
-      {/* Table Display (Updated for Metrics) */}
+      {/* Table Display (Updated for Metrics)   */}
       {tableData && (
         <div className="data-table card">
           <table>
