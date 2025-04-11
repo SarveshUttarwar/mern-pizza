@@ -82,15 +82,6 @@ function Dashboard() {
     { name: "Category E", value: 300 },
     { name: "Category F", value: 900 },
     { name: "Category G", value: 700 },
-    { name: "Category H", value: 800 },
-    { name: "Category I", value: 600 },
-    { name: "Category J", value: 300 },
-    { name: "Category K", value: 100 },
-    { name: "Category L", value: 1100 },
-    { name: "Category M", value: 600 },
-    { name: "Category N", value: 300 },
-    { name: "Category O", value: 900 },
-    { name: "Category P", value: 100 },
 
   ];
   const COLORS = ["#002855", "#00509E", "#007BFF", "#1A1F71", "#00BFFF", "#4682B4", "#274472", "#0A1172"];

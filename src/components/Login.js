@@ -1,12 +1,12 @@
 // src/components/Login.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import Cookies from 'js-cookie'; // Import js-cookie
+import Cookies from 'js-cookie';
 import { LOGIN_ENDPOINT } from './config';
 import '../App.css';
- 
+
 const Login = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -15,10 +15,17 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false); // State for "Remember me"
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
- 
+
+  // Optional: Check cookies on component mount
+  useEffect(() => {
+    const storedUsername = Cookies.get('username');
+    const storedToken = Cookies.get('authToken');
+    console.log('Cookies on mount:', { storedUsername, storedToken });
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -32,23 +39,23 @@ const Login = () => {
       });
     }
   };
- 
+
   const validateForm = () => {
     let tempErrors = {};
     if (!formData.username) tempErrors.username = 'Username is required';
     else if (formData.username.length < 3) tempErrors.username = 'Username must be at least 3 characters';
-   
+    
     if (!formData.password) tempErrors.password = 'Password is required';
     else if (formData.password.length < 6) tempErrors.password = 'Password must be at least 6 characters';
- 
+
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
- 
+
     if (validateForm()) {
       try {
         const response = await fetch(LOGIN_ENDPOINT, {
@@ -61,16 +68,15 @@ const Login = () => {
             password: formData.password
           }),
         });
- 
+
         if (response.ok) {
-          const data = await response.json(); // Assuming the server returns { token, ...otherData }
-          const token = data.token; // Example: Extract token from response
- 
-          // Store username and token in cookies
+          const data = await response.json();
+          const token = data.token;
+
           Cookies.set('username', formData.username, {
-            expires: rememberMe ? 7 : 1, // 7 days if "Remember me" is checked, else 1 day
-            secure: true, // Only send over HTTPS
-            sameSite: 'Strict' // Prevent CSRF
+            expires: rememberMe ? 7 : 1,
+            secure: true,
+            sameSite: 'Strict'
           });
           if (token) {
             Cookies.set('authToken', token, {
@@ -79,9 +85,13 @@ const Login = () => {
               sameSite: 'Strict'
             });
           }
- 
-          login(formData.username); // Update auth context
-          navigate('/dashboard');   // Redirect to dashboard
+
+          const retrievedUsername = Cookies.get('username');
+          const retrievedToken = Cookies.get('authToken');
+          console.log('Cookies after login:', { username: retrievedUsername, authToken: retrievedToken });
+
+          login(formData.username);
+          navigate('/dashboard');
         } else {
           setErrors({ submit: 'Invalid username or password' });
         }
@@ -92,22 +102,23 @@ const Login = () => {
     }
     setIsSubmitting(false);
   };
- 
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
- 
+
   const handleRememberMeChange = (e) => {
     setRememberMe(e.target.checked);
   };
- 
+
   return (
     <div className="login-page">
       <div className="login-container">
+        <div className="login-image"></div> {/* Placeholder for financial forecasting image */}
         <div className="login-box">
           <h2 className="login-title">Welcome to 4kast.ai</h2>
           <p className="login-subtitle">Please enter your credentials to login</p>
-         
+          
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
               <label htmlFor="username">Username</label>
@@ -122,7 +133,7 @@ const Login = () => {
               />
               {errors.username && <span className="error">{errors.username}</span>}
             </div>
- 
+
             <div className="form-group password-group">
               <label htmlFor="password">Password</label>
               <div className="password-wrapper">
@@ -141,7 +152,7 @@ const Login = () => {
               </div>
               {errors.password && <span className="error">{errors.password}</span>}
             </div>
- 
+
             <div className="form-options">
               <label className="remember-me">
                 <input
@@ -155,28 +166,21 @@ const Login = () => {
                 Forgot Password?
               </a>
             </div>
- 
+
             {errors.submit && <span className="error submit-error">{errors.submit}</span>}
- 
-            <button
-              type="submit"
+
+            <button 
+              type="submit" 
               className="login-button"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Logging in...' : 'Login'}
             </button>
           </form>
- 
-          <p className="signup-link">
-            Don't have an account?{' '}
-            <a href="#" onClick={() => navigate('/signup')}>
-              Sign up
-            </a>    
-          </p>      
-        </div>            
-      </div>        
-    </div>          
+        </div>             
+      </div>         
+    </div>           
   );
 };
- 
+
 export default Login;
