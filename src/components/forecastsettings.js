@@ -13,7 +13,7 @@ const ForecastSettings = () => {
   const [forecastHorizon, setForecastHorizon] = useState("10");
   const [forecastLock, setForecastLock] = useState("19");
   const [measures, setMeasures] = useState([{ id: Date.now(), value: "Sales History", selected: false }]);
-  const [granularity, setGranularity] = useState("Overall"); // Updated default to new option
+  const [granularity, setGranularity] = useState("Overall");
   const [aggregation, setAggregation] = useState("Sum");
   const [forecastMethod, setForecastMethod] = useState("Best Fit");
   const [showCheckboxes, setShowCheckboxes] = useState(false);
@@ -36,18 +36,21 @@ const ForecastSettings = () => {
     { name: "Seasonal History", createdBy: "Arjun", date: "7-Nov-2024" },
     { name: "Intermittent History", createdBy: "Bhavana", date: "7-Nov-2024" },
     { name: "Advanced Forecasting", createdBy: "Vishnu", date: "7-Nov-2024" },
+    { name: "ARIMA", createdBy: "Jay", date: "7-Nov-2024"},
+    { name: "LSTM", createdBy: "Sarvesh", date: "7-Nov-2024"},
+    { name: "Logistic Regression", createdBy: "Sreeram", date: "7-Nov-2024"},
+    { name: "Linear Regression", createdBy: "Rose", date: "7-Nov-2024"},
+    { name: "CNN", createdBy: "Rose", date: "7-Nov-2024"},
   ];
 
   const measureOptions = ["Sales History", "Inventory Levels", "Demand Trends"];
 
-  // New granularity options
   const granularityOptions = [
     "Overall",
     "ProductID-wise",
     "StoreID-ProductID Combination",
   ];
 
-  // Fetch files from the server
   useEffect(() => {
     const fetchFiles = async () => {
       try {
@@ -66,7 +69,6 @@ const ForecastSettings = () => {
     fetchFiles();
   }, []);
 
-  // Parse selected dataset
   const handleDatasetChange = async (event) => {
     const fileName = event.target.value;
     setSelectedDataset(fileName);
@@ -242,7 +244,6 @@ const ForecastSettings = () => {
     }
   };
 
-  // Forecast Settings Functions
   const addMeasure = () => {
     setMeasures([...measures, { id: Date.now(), value: "Sales History", selected: false }]);
     setShowCheckboxes(false);
@@ -409,7 +410,9 @@ const ForecastSettings = () => {
             <thead>
               <tr>
                 {columnNames.map((col, index) => (
-                  <th key={index}>{col}</th>
+                  <th key={index} scope="col">
+                    {col}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -422,6 +425,8 @@ const ForecastSettings = () => {
                         type="text"
                         value={row[col] || ""}
                         onChange={(e) => handleFieldChange(index, col, e.target.value)}
+                        aria-label={`View ${col} for row ${index + 1}`}
+                        readOnly={true} // Make fields non-editable after preview
                       />
                     </td>
                   ))}
@@ -429,7 +434,11 @@ const ForecastSettings = () => {
               ))}
             </tbody>
           </table>
-          <button ref={uploadButtonRef} className="save-btn" onClick={handleUploadDataForCleaning}>
+          <button
+            ref={uploadButtonRef}
+            className="upload-data-for-cleaning"
+            onClick={handleUploadDataForCleaning}
+          >
             Upload Data for Cleaning
           </button>
         </div>

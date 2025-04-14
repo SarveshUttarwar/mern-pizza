@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css"; // Ensure your CSS file is correctly linked
 import { FaUserCircle } from "react-icons/fa";
+import Cookies from 'js-cookie'; // Import Cookies to access cookie data
 
 function ProfileDashboard() {
   const [profileImage, setProfileImage] = useState(null);
@@ -8,6 +9,18 @@ function ProfileDashboard() {
   const [fileInput, setFileInput] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
+  const [username, setUsername] = useState(""); // State to store username from cookie
+
+  // Fetch username from cookie on component mount
+  useEffect(() => {
+    const storedUsername = Cookies.get('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    } else {
+      setUsername("Guest"); // Default if no username is found
+    }
+    console.log('Username from cookie:', storedUsername);
+  }, []);
 
   // Function to handle file upload
   const handleFileUpload = (event) => {
@@ -31,7 +44,6 @@ function ProfileDashboard() {
     setTasks(updatedTasks);
   };
 
-
   // Function to handle image URL input
   const handleImageURLUpload = () => {
     if (imageInput.trim() !== "") {
@@ -52,7 +64,7 @@ function ProfileDashboard() {
         <h2>Profile Dashboard</h2>
         <div className="user-profile">
           <FaUserCircle className="user-icon" />
-          <span><strong>Hello, Sarvesh!</strong></span>
+          <span><strong>Hello, {username || "Guest"}!</strong></span> {/* Updated to dynamic username */}
         </div>
       </div>
 
@@ -69,8 +81,9 @@ function ProfileDashboard() {
           </div>
 
           <h3>My Profile</h3>
-          <p><strong>Name:</strong> Sarvesh</p>
-          <p><strong>Email:</strong> sarvesh@example.com</p>
+          <p><strong>Name:</strong> {username || "Guest"}</p>
+          <p><strong>Email:</strong> {username ? `${username}@example.com` : "guest@example.com"}</p>
+          <p><strong>Password:</strong> Not stored for security reasons</p> {/* Note about password */}
 
           {/* Image Upload Section */}
           <div className="upload-section">
@@ -174,9 +187,5 @@ function ProfileDashboard() {
     </div>
   );
 }
+
 export default ProfileDashboard;
-
-
-
-
-

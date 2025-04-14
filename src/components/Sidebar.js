@@ -49,6 +49,7 @@
 // src/components/Sidebar.js
 
 // src/components/Sidebar.js
+
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -68,10 +69,10 @@ const menuItems = [
   { name: "Import Data", path: "/import", icon: <FaComments /> },
   { name: "Forecast Settings", path: "/forecast-settings", icon: <FaUsers /> },
   { name: "Planner Workbench", path: "/planner-workbench", icon: <FaWrench /> },
-  { name: "Outlier Report", path: "/outlier-report", icon: <FaCogs /> },
+  // { name: "Outlier Report", path: "/outlier-report", icon: <FaCogs /> },
+  // { name: "Integration Scenarios", path: "/integration-scenarios", icon: <FaProjectDiagram /> },
   { name: "Master Data", path: "/master-data", icon: <FaDatabase /> },
   { name: "I AM", path: "/iam", icon: <FaChartBar /> },
-  { name: "Integration Scenarios", path: "/integration-scenarios", icon: <FaProjectDiagram /> },
 ];
 
 function Sidebar() {

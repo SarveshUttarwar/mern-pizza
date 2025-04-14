@@ -7,11 +7,14 @@ import {
   FaHeadphones,
   FaInfoCircle,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import Cookies from 'js-cookie'; // Import Cookies to manage cookie data
 import "../App.css";
 
 function Settings() {
   const [selectedSetting, setSelectedSetting] = useState(null);
   const [themeMessage, setThemeMessage] = useState("");
+  const navigate = useNavigate(); // Initialize navigate for redirection
 
   const handleSettingClick = (setting) => {
     setSelectedSetting(selectedSetting === setting ? null : setting);
@@ -20,6 +23,15 @@ function Settings() {
   const handleThemeChange = (theme) => {
     setThemeMessage(`${theme} mode has been applied.`);
     setTimeout(() => setThemeMessage(""), 2000);
+  };
+
+  const handleLogout = () => {
+    // Remove cookies for the current session
+    Cookies.remove('username');
+    Cookies.remove('authToken');
+    console.log('Cookies removed, redirecting to login...');
+    // Redirect to login page
+    navigate('/login');
   };
 
   const settingsData = {
@@ -120,6 +132,15 @@ function Settings() {
             )}
           </div>
         ))}
+
+        {/* Logout Option */}
+        <div className="settings-item">
+          <div className="settings-left" onClick={handleLogout}>
+            <span className="settings-icon"><FaArrowLeft /></span>
+            <span>Logout</span>
+          </div>
+          <span className="arrow" onClick={handleLogout}>›</span>
+        </div>
       </div>
     </div>
   );
