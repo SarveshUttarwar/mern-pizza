@@ -3,10 +3,9 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   BarChart, Bar, ScatterChart, Scatter, AreaChart, Area, PieChart, Pie, Cell, Legend
 } from "recharts";
-import "../App.css"; // Import global styles
+import "../App.css";
 
 function Dashboard() {
-  // Dummy data for graphs
   const lineData = [
     { name: "Jan", value: 100 },
     { name: "Feb", value: 120 },
@@ -16,9 +15,9 @@ function Dashboard() {
     { name: "Jun", value: 200 },
     { name: "Jul", value: 400 },
     { name: "Aug", value: 250 },
-    { name: "sep", value: 190 },
-    { name: "oct", value: 400 },
-    { name: "nov", value: 175 },
+    { name: "Sep", value: 190 },
+    { name: "Oct", value: 400 },
+    { name: "Nov", value: 175 },
     { name: "Dec", value: 100 },
   ];
 
@@ -82,15 +81,15 @@ function Dashboard() {
     { name: "Category E", value: 300 },
     { name: "Category F", value: 900 },
     { name: "Category G", value: 700 },
-
   ];
-  const COLORS = ["#002855", "#00509E", "#007BFF", "#1A1F71", "#00BFFF", "#4682B4", "#274472", "#0A1172"];
+  const COLORS = ["#0078D4", "#005BA1", "#004578", "#003359", "#002540", "#001F3F", "#001528"];
 
-
-
-  const darkBlueShades = ["#002855", "#003F7D", "#00509E", "#007BFF"];
-  const [currentColor, setCurrentColor] = useState(darkBlueShades[0]);
+  const [currentColor, setCurrentColor] = useState("#0078D4");
   const [index, setIndex] = useState(0);
+  const darkBlueShades = ["#0078D4", "#005BA1", "#004578", "#003359"];
+  const [selectedViz, setSelectedViz] = useState(null);
+  const [show3DOption, setShow3DOption] = useState(false);
+  const [showPieOption, setShowPieOption] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -101,110 +100,164 @@ function Dashboard() {
     return () => clearInterval(interval);
   }, [index]);
 
+  const handleVizSelect = (vizType) => {
+    if (vizType === "3D") {
+      const confirm3D = window.confirm("Do you want to include 3D visualizations? Note: This requires additional libraries like Three.js for full implementation.");
+      if (confirm3D) {
+        setSelectedViz("3D");
+      } else {
+        setSelectedViz(null);
+      }
+      setShow3DOption(true);
+    } else if (vizType === "Pie") {
+      const confirmPie = window.confirm("Do you want to include Pie Charts?");
+      if (confirmPie) {
+        setSelectedViz("Pie");
+      } else {
+        setSelectedViz(null);
+      }
+      setShowPieOption(true);
+    } else {
+      setSelectedViz(vizType);
+    }
+  };
+
+  const renderVisualization = () => {
+    switch (selectedViz) {
+      case "Line":
+        return (
+          <div className="chart-box">
+            <h4 className="chart-title">Sales Trend</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={lineData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#666" }} />
+                <YAxis tick={{ fontSize: 12, fill: "#666" }} />
+                <Tooltip />
+                <Line type="monotone" dataKey="value" stroke="#0078D4" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "Bar":
+        return (
+          <div className="chart-box">
+            <h4 className="chart-title">Product Sales</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={barData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#666", angle: -45, textAnchor: "end" }} interval={0} height={70} />
+                <YAxis tick={{ fontSize: 12, fill: "#666" }} />
+                <Tooltip />
+                <Bar dataKey="sales" fill="#005BA1" barSize={20} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "Scatter":
+        return (
+          <div className="chart-box">
+            <h4 className="chart-title">Forecast Accuracy</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <ScatterChart>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                <XAxis type="number" dataKey="x" tick={{ fontSize: 12, fill: "#666" }} />
+                <YAxis type="number" dataKey="y" tick={{ fontSize: 12, fill: "#666" }} />
+                <Tooltip />
+                <Scatter data={scatterData} fill="#FF6F61" />
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "Area":
+        return (
+          <div className="chart-box">
+            <h4 className="chart-title">Revenue Growth</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={areaData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#666" }} />
+                <YAxis tick={{ fontSize: 12, fill: "#666" }} />
+                <Tooltip />
+                <Area type="monotone" dataKey="revenue" fill="rgba(0, 120, 212, 0.3)" stroke="#0078D4" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "Pie":
+        return (
+          <div className="chart-box full-width">
+            <h4 className="chart-title">Category Distribution</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie data={pieData} cx="50%" cy="50%" outerRadius={100} fill="#8884d8" dataKey="value" label>
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend verticalAlign="bottom" height={36} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      case "3D":
+        return (
+          <div className="chart-box full-width">
+            <h4 className="chart-title">3D Visualization (Placeholder)</h4>
+            <p>3D plots require additional libraries like Three.js or react-three-fiber for implementation. Contact your developer to integrate.</p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="dashboard">
-      <h2 className="dashboard-title">Dashboard</h2>
+      <h2 className="dashboard-title">Dashboard Overview</h2>
 
       {/* KPI Cards */}
       <div className="kpi-container">
-        {[87, 46, -4, 86].map((percentage, idx) => (
-          <div
-            key={idx}
-            className="kpi-card"
-            style={{
-              backgroundColor: currentColor,
-              color: "white",
-              transition: "background-color 1.5s ease-in-out",
-            }}
-          >
-            <h4>Forecasted Data</h4>
-            <h2 style={{ color: percentage >= 0 ? "#28FFBF" : "#FF4D4D", fontSize: "20px" }}>
-              {percentage}%
-            </h2>
-            <p style={{ fontSize: "14px" }}>{Math.floor(Math.random() * 500000000)} Cases</p>
-            <span style={{ fontSize: "12px" }}>
-              {percentage >= 0 ? "On Target" : "Below Target"}
-            </span>
+        {[87, 46, -4, 86, 23, 65].map((percentage, idx) => (
+          <div key={idx} className="kpi-card">
+            <div className="kpi-header">
+              <h4>Forecasted Data</h4>
+              <span className="kpi-icon">📈</span>
+            </div>
+            <div className="kpi-value">
+              <h2 style={{ color: percentage >= 0 ? "#00C853" : "#FF4444" }}>
+                {percentage}%
+              </h2>
+              <p>{Math.floor(Math.random() * 500000000).toLocaleString()} Cases</p>
+            </div>
+            <div className="kpi-status">
+              <span style={{ color: percentage >= 0 ? "#00C853" : "#FF4444" }}>
+                {percentage >= 0 ? "On Target" : "Below Target"}
+              </span>
+              <div className="kpi-trend" style={{ background: percentage >= 0 ? "#E8F5E9" : "#FFEBEE" }}>
+                <span>{percentage >= 0 ? "↑" : "↓"} {Math.abs(percentage)}%</span>
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Graph Containers */}
-      <div className="charts-container">
-        {/* First Row - 2 Bigger Graphs */}
-        <div className="large-graphs">
-          <div className="graph-box">
-            <h4 style={{ fontSize: "14px", color: "#002855" }}>Sales Trend</h4>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={lineData}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <CartesianGrid strokeDasharray="3 3" stroke="#D1D5DB" />
-                <Line type="monotone" dataKey="value" stroke="#007BFF" strokeWidth={3} dot={{ stroke: "#002855", strokeWidth: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="graph-box">
-            <h4 style={{ fontSize: "14px", color: "#002855" }}>Product Sales</h4>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={barData}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <CartesianGrid strokeDasharray="3 3" stroke="#D1D5DB" />
-                <Bar dataKey="sales" fill="#00509E" barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Second Row - 2 Bigger Graphs */}
-        <div className="large-graphs">
-          <div className="graph-box">
-            <h4 style={{ fontSize: "14px", color: "#002855" }}>Forecast Accuracy</h4>
-            <ResponsiveContainer width="90%" height={250}>
-              <ScatterChart>
-                <XAxis type="number" dataKey="x" tick={{ fontSize: 14 }} />
-                <YAxis type="number" dataKey="y" tick={{ fontSize: 14 }} />
-                <Tooltip />
-                <CartesianGrid strokeDasharray="3 3" stroke="#D1D5DB" />
-                <Scatter data={scatterData} fill="#FF4D4D" />
-              </ScatterChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="graph-box">
-            <h4 style={{ fontSize: "16px", color: "#002855" }}>Revenue Growth</h4>
-            <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={areaData}>
-                <XAxis dataKey="month" tick={{ fontSize: 14 }} />
-                <YAxis tick={{ fontSize: 14 }} />
-                <Tooltip />
-                <CartesianGrid strokeDasharray="3 3" stroke="#D1D5DB" />
-                <Area type="monotone" dataKey="revenue" fill="rgba(0, 40, 85, 0.7)" stroke="#002855" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Third Row - Pie Chart */}
-        <div className="graph-box">
-          <h4 style={{ fontSize: "16px", color: "#002855" }}>Category Distribution</h4>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" dataKey="value" label>
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+      {/* Visualization Selection */}
+      <div className="viz-selection">
+        <h3 className="viz-title">Select Visualization</h3>
+        <div className="viz-options">
+          <button onClick={() => handleVizSelect("Line")}>Line Graph</button>
+          <button onClick={() => handleVizSelect("Bar")}>Bar Graph</button>
+          <button onClick={() => handleVizSelect("Scatter")}>Scatter Plot</button>
+          <button onClick={() => handleVizSelect("Area")}>Area Chart</button>
+          <button onClick={() => handleVizSelect("Pie")}>Pie Chart</button>
+          <button onClick={() => handleVizSelect("3D")}>3D Visualization</button>
         </div>
       </div>
+
+      {/* Render Selected Visualization */}
+      {renderVisualization()}
     </div>
   );
 }

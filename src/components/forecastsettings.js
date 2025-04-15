@@ -491,7 +491,7 @@ const ForecastSettings = () => {
                   </select>
                 </div>
               </div>
-
+ 
               <div className="settings-card" style={{ flex: "1" }}>
                 <h5 style={{ fontSize: "16px" }}>Historical Horizon</h5>
                 <div className="input-group">
