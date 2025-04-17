@@ -54,7 +54,7 @@ const ForecastSettings = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await fetch("http://192.168.60.68:8080/files");
+        const response = await fetch("http://192.168.60.127:8080/files");
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Failed to fetch file list: ${response.status} - ${errorText}`);
@@ -81,7 +81,7 @@ const ForecastSettings = () => {
 
     if (fileName) {
       try {
-        const response = await fetch(`http://192.168.60.68:8080/download/${encodeURIComponent(fileName)}`);
+        const response = await fetch(`http://192.168.60.127:8080/download/${encodeURIComponent(fileName)}`);
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Fetch failed with status ${response.status}: ${errorText}`);

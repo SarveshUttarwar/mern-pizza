@@ -10,9 +10,12 @@ function ImportData() {
   const [previewData, setPreviewData] = useState(null);
   const [previewHeaders, setPreviewHeaders] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
+  const [importSource, setImportSource] = useState("Local device");
+  const [urlInput, setUrlInput] = useState("");
   const fileInputRef = useRef(null);
 
   const API_ENDPOINT = UPLOAD_FILE_ENDPOINT;
+  const PROXY_ENDPOINT = "http://192.168.60.127:8080/proxy"; // Ensure this endpoint is implemented
 
   console.log("API Endpoint configured as:", API_ENDPOINT);
 
@@ -24,7 +27,7 @@ function ImportData() {
 
   const fetchFiles = async () => {
     try {
-      const response = await fetch("http://192.168.60.68:8080/files");
+      const response = await fetch("http://192.168.60.127:8080/files");
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to fetch file list: ${response.status} - ${errorText}`);
@@ -38,7 +41,15 @@ function ImportData() {
   };
 
   const handleImportClick = () => {
-    fileInputRef.current.click();
+    if (importSource === "Local device") {
+      fileInputRef.current.click();
+    } else if (importSource === "Online") {
+      if (!urlInput) {
+        alert("Please enter a valid URL.");
+        return;
+      }
+      handleUrlImport();
+    }
   };
 
   const handleFileChange = async (event) => {
@@ -54,8 +65,6 @@ function ImportData() {
 
     const formData = new FormData();
     formData.append("file", file);
-    // Removed table parameter since selectedTable is no longer used
-    // formData.append("table", selectedTable);
 
     try {
       const response = await fetch(API_ENDPOINT, {
@@ -80,9 +89,101 @@ function ImportData() {
     fileInputRef.current.value = "";
   };
 
+  const handleUrlImport = async () => {
+    try {
+      let fetchUrl = urlInput;
+
+      // Handle Google Sheets URL by converting to CSV export link
+      if (urlInput.includes("docs.google.com/spreadsheets")) {
+        const sheetIdMatch = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
+        let gidMatch = urlInput.match(/gid=(\d+)/);
+        if (sheetIdMatch && sheetIdMatch[1]) {
+          fetchUrl = `https://docs.google.com/spreadsheets/d/${sheetIdMatch[1]}/export?format=csv`;
+          // Handle duplicate gid parameters, take the first valid one
+          if (gidMatch && gidMatch[1]) {
+            fetchUrl += `&gid=${gidMatch[1]}`;
+          } else {
+            fetchUrl += "&gid=0"; // Default to first sheet
+          }
+          console.log("Generated export URL:", fetchUrl);
+        } else {
+          throw new Error("Invalid Google Sheets URL. Please use a valid spreadsheet link.");
+        }
+
+        // Use proxy for Google Sheets to bypass CORS
+        const proxyResponse = await fetch(`${PROXY_ENDPOINT}?url=${encodeURIComponent(fetchUrl)}`, {
+          mode: "cors",
+        });
+        if (!proxyResponse.ok) {
+          const errorText = await proxyResponse.text();
+          console.error("Proxy response error:", errorText);
+          throw new Error(`Proxy fetch failed: ${proxyResponse.status} - ${errorText}`);
+        }
+        const proxyData = await proxyResponse.blob();
+        fetchUrl = URL.createObjectURL(proxyData); // Use proxied data
+      } else {
+        // Try client-side fetch for non-Google Sheets URLs
+        const response = await fetch(fetchUrl, {
+          mode: "cors",
+          credentials: "omit",
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status} - ${response.statusText}`);
+        }
+        fetchUrl = URL.createObjectURL(await response.blob());
+      }
+
+      const response = await fetch(fetchUrl, {
+        mode: "cors",
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to process fetched data: ${response.status} - ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get("content-type");
+      let fileName = urlInput.split("/").pop() || "imported_file";
+      let blob = await response.blob();
+
+      if (contentType && contentType.includes("text/csv")) {
+        fileName = fileName.endsWith(".csv") ? fileName : `${fileName}.csv`;
+        blob = new Blob([await blob.text()], { type: "text/csv" });
+      } else if (contentType && contentType.includes("spreadsheetml.sheet")) {
+        fileName = fileName.endsWith(".xlsx") ? fileName : `${fileName}.xlsx`;
+        blob = new Blob([await blob.arrayBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      } else {
+        throw new Error("Unsupported file type. Please provide a CSV or Excel file URL.");
+      }
+
+      const file = new File([blob], fileName, { type: blob.type });
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadResponse = await fetch(API_ENDPOINT, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await uploadResponse.json();
+
+      if (uploadResponse.ok) {
+        setImportLog(`File "${fileName}" uploaded successfully as "${result.filename}"`);
+        alert("File uploaded successfully!");
+        fetchFiles();
+      } else {
+        throw new Error(result.error || "Upload failed");
+      }
+    } catch (error) {
+      console.error("URL import error:", error);
+      alert(`Error importing from URL: ${error.message}. Ensure the URL is correct, the file is publicly accessible, and the proxy is running. For Google Sheets, use /export?format=csv&gid=... and share publicly. Check console for details.`);
+    }
+
+    setUrlInput("");
+  };
+
   const handlePreview = async (filename) => {
     try {
-      const url = `http://192.168.60.68:8080/download/${encodeURIComponent(filename)}`;
+      const url = `http://192.168.60.127:8080/download/${encodeURIComponent(filename)}`;
       const response = await fetch(url);
       if (!response.ok) {
         const errorText = await response.text();
@@ -127,7 +228,7 @@ function ImportData() {
 
   const handleDelete = async (filename) => {
     try {
-      const url = "http://192.168.60.68:8080/deletefile";
+      const url = "http://192.168.60.127:8080/deletefile";
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -141,7 +242,7 @@ function ImportData() {
       }
       const result = await response.json();
       alert(`File "${filename}" deleted successfully!`);
-      fetchFiles(); // Refresh the file list
+      fetchFiles();
     } catch (error) {
       console.error("Delete error:", error);
       alert(`Error deleting file: ${error.message}`);
@@ -161,12 +262,30 @@ function ImportData() {
           <h3 className="template-title">Upload Data</h3>
           <div className="template-content">
             <label>Import from</label>
-            <select className="input-field">
+            <select
+              className="input-field"
+              value={importSource}
+              onChange={(e) => setImportSource(e.target.value)}
+            >
               <option>Local device</option>
               <option>Online</option>
             </select>
 
-            <div className="btn-group">
+            {importSource === "Online" && (
+              <div style={{ marginTop: "10px" }}>
+                <label>Enter URL</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  placeholder="Paste file URL (CSV or Excel, use /export?format=csv&gid=... for Google Sheets)"
+                  style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+                />
+              </div>
+            )}
+
+            <div className="btn-group" style={{ marginTop: "20px" }}>
               <button className="cancel-btn">Cancel</button>
               <button className="save-btn" onClick={handleImportClick}>
                 Import
@@ -241,7 +360,6 @@ function ImportData() {
           border: "1px solid #ddd",
           borderRadius: "4px",
           boxShadow: "0 0 10px rgba(0,0,0,0.3)",
-          zIndex: 1000,
           display: "flex",
           flexDirection: "column",
         }}>

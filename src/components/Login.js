@@ -18,7 +18,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
-
+  // Password should not be stored in the cookies
   // Optional: Check cookies on component mount
   useEffect(() => {
     const storedUsername = Cookies.get('username');

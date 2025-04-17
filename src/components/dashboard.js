@@ -1,263 +1,296 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
-  BarChart, Bar, ScatterChart, Scatter, AreaChart, Area, PieChart, Pie, Cell, Legend
+  BarChart, Bar
 } from "recharts";
+import Heatmap from "react-heatmap-grid";
 import "../App.css";
 
 function Dashboard() {
-  const lineData = [
-    { name: "Jan", value: 100 },
-    { name: "Feb", value: 120 },
-    { name: "Mar", value: 150 },
-    { name: "Apr", value: 130 },
-    { name: "May", value: 180 },
-    { name: "Jun", value: 200 },
-    { name: "Jul", value: 400 },
-    { name: "Aug", value: 250 },
-    { name: "Sep", value: 190 },
-    { name: "Oct", value: 400 },
-    { name: "Nov", value: 175 },
-    { name: "Dec", value: 100 },
+  // State for chart visibility
+  const [chartVisibility, setChartVisibility] = useState({
+    historical: true,
+    growing: true,
+    declining: true,
+    heatmap: true,
+    risk: true,
+    error: true,
+  });
+
+  // State for selected data set
+  const [selectedDataSet, setSelectedDataSet] = useState("default");
+
+  // Data for KPI cards
+  const kpiData = {
+    totalDemand: 1500000,
+    mape: 8.5,
+    bias: -2.3,
+    aiConfidence: 67,
+  };
+
+  // Base data sets
+  const baseLineData = [
+    { name: "ItemA", "2021": 60, "2022": 65, "2023": 70, "2024": 75, "2025": 80 },
+    { name: "ItemB", "2021": 70, "2022": 75, "2023": 80, "2024": 85, "2025": 90 },
+    { name: "ItemC", "2021": 80, "2022": 85, "2023": 90, "2024": 95, "2025": 100 },
+    { name: "ItemD", "2021": 50, "2022": 55, "2023": 60, "2024": 65, "2025": 70 },
+    { name: "ItemE", "2021": 90, "2022": 95, "2023": 100, "2024": 105, "2025": 110 },
   ];
 
-  const barData = [
-    { name: "Product A", sales: 240 },
-    { name: "Product B", sales: 130 },
-    { name: "Product C", sales: 280 },
-    { name: "Product D", sales: 350 },
-    { name: "Product E", sales: 270 },
-    { name: "Product F", sales: 100 },
-    { name: "Product G", sales: 380 },
-    { name: "Product H", sales: 330 },
-    { name: "Product I", sales: 240 },
-    { name: "Product J", sales: 130 },
-    { name: "Product K", sales: 280 },
-    { name: "Product L", sales: 350 },
-    { name: "Product M", sales: 240 },
-    { name: "Product N", sales: 130 },
-    { name: "Product O", sales: 280 },
-    { name: "Product P", sales: 350 },
-    { name: "Product Q", sales: 240 },
-    { name: "Product R", sales: 130 },
-    { name: "Product S", sales: 280 },
-    { name: "Product T", sales: 350 },
+  const baseGrowingData = [
+    { name: "ItemF12", value: 100, base: 0 },
+    { name: "ItemY6", value: 77.21, base: 0 },
+    { name: "ItemE3", value: 84.14, base: 0 },
   ];
 
-  const scatterData = [
-    { x: 10, y: 30 },
-    { x: 20, y: 50 },
-    { x: 30, y: 70 },
-    { x: 40, y: 90 },
-    { x: 50, y: 140 },
-    { x: 60, y: 90 },
-    { x: 70, y: 50 },
-    { x: 80, y: 120 },
-    { x: 90, y: 40 },
-    { x: 100, y: 80 },
-    { x: 110, y: 160 },
+  const baseDecliningData = [
+    { name: "ItemA", value: 84.82, base: 100 },
+    { name: "ItemD", value: 62.24, base: 100 },
+    { name: "ItemO", value: 38.82, base: 100 },
   ];
 
-  const areaData = [
-    { month: "Jan", revenue: 100 },
-    { month: "Feb", revenue: 120 },
-    { month: "Mar", revenue: 150 },
-    { month: "Apr", revenue: 130 },
-    { month: "May", revenue: 180 },
-    { month: "Jun", revenue: 200 },
-    { month: "Jul", revenue: 90 },
-    { month: "Aug", revenue: 130 },
-    { month: "Sep", revenue: 160 },
-    { month: "Oct", revenue: 190 },
-    { month: "Nov", revenue: 220 },
-    { month: "Dec", revenue: 250 },
+  const baseHeatmapData = [
+    [90, 75, 60, 45, 30, 15], // High
+    [85, 70, 55, 40, 25, 10], // Med
+    [80, 65, 50, 35, 20, 5],  // Low
   ];
 
-  const pieData = [
-    { name: "Category A", value: 200 },
-    { name: "Category B", value: 100 },
-    { name: "Category C", value: 600 },
-    { name: "Category D", value: 800 },
-    { name: "Category E", value: 300 },
-    { name: "Category F", value: 900 },
-    { name: "Category G", value: 700 },
+  const baseRiskFlagsData = [
+    { name: "Under 10%", value: 20 },
+    { name: "Over 10%", value: 30 },
+    { name: "Within 10%", value: 70 },
   ];
-  const COLORS = ["#0078D4", "#005BA1", "#004578", "#003359", "#002540", "#001F3F", "#001528"];
 
-  const [currentColor, setCurrentColor] = useState("#0078D4");
-  const [index, setIndex] = useState(0);
-  const darkBlueShades = ["#0078D4", "#005BA1", "#004578", "#003359"];
-  const [selectedViz, setSelectedViz] = useState(null);
-  const [show3DOption, setShow3DOption] = useState(false);
-  const [showPieOption, setShowPieOption] = useState(false);
+  const baseErrorDistributionData = [
+    { name: "0-20", value: 1.0 },
+    { name: "20-40", value: 2.0 },
+    { name: "40-60", value: 3.0 },
+    { name: "60-80", value: 4.0 },
+    { name: "80-100", value: 5.0 },
+  ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prevIndex) => (prevIndex + 1) % darkBlueShades.length);
-      setCurrentColor(darkBlueShades[index]);
-    }, 3000);
+  // Alternative data sets
+  const altLineData = [
+    { name: "ItemF", "2021": 55, "2022": 60, "2023": 65, "2024": 70, "2025": 75 },
+    { name: "ItemG", "2021": 65, "2022": 70, "2023": 75, "2024": 80, "2025": 85 },
+    { name: "ItemH", "2021": 75, "2022": 80, "2023": 85, "2024": 90, "2025": 95 },
+    { name: "ItemI", "2021": 45, "2022": 50, "2023": 55, "2024": 60, "2025": 65 },
+    { name: "ItemJ", "2021": 85, "2022": 90, "2023": 95, "2024": 100, "2025": 105 },
+  ];
 
-    return () => clearInterval(interval);
-  }, [index]);
+  const altGrowingData = [
+    { name: "ItemX1", value: 95, base: 0 },
+    { name: "ItemY2", value: 82.34, base: 0 },
+    { name: "ItemZ3", value: 78.56, base: 0 },
+  ];
 
-  const handleVizSelect = (vizType) => {
-    if (vizType === "3D") {
-      const confirm3D = window.confirm("Do you want to include 3D visualizations? Note: This requires additional libraries like Three.js for full implementation.");
-      if (confirm3D) {
-        setSelectedViz("3D");
-      } else {
-        setSelectedViz(null);
-      }
-      setShow3DOption(true);
-    } else if (vizType === "Pie") {
-      const confirmPie = window.confirm("Do you want to include Pie Charts?");
-      if (confirmPie) {
-        setSelectedViz("Pie");
-      } else {
-        setSelectedViz(null);
-      }
-      setShowPieOption(true);
-    } else {
-      setSelectedViz(vizType);
+  const altDecliningData = [
+    { name: "ItemB", value: 79.45, base: 100 },
+    { name: "ItemE", value: 58.90, base: 100 },
+    { name: "ItemP", value: 35.67, base: 100 },
+  ];
+
+  const altHeatmapData = [
+    [85, 70, 55, 40, 25, 10], // High
+    [80, 65, 50, 35, 20, 5],  // Med
+    [75, 60, 45, 30, 15, 0],  // Low
+  ];
+
+  const altRiskFlagsData = [
+    { name: "Under 5%", value: 15 },
+    { name: "Over 15%", value: 25 },
+    { name: "Within 15%", value: 60 },
+  ];
+
+  const altErrorDistributionData = [
+    { name: "0-20", value: 0.5 },
+    { name: "20-40", value: 1.5 },
+    { name: "40-60", value: 2.5 },
+    { name: "60-80", value: 3.5 },
+    { name: "80-100", value: 4.5 },
+  ];
+
+  // Select data based on dropdown
+  const getData = (chartType) => {
+    switch (selectedDataSet) {
+      case "alternate":
+        switch (chartType) {
+          case "line": return altLineData;
+          case "growing": return altGrowingData;
+          case "declining": return altDecliningData;
+          case "heatmap": return altHeatmapData;
+          case "risk": return altRiskFlagsData;
+          case "error": return altErrorDistributionData;
+          default: return [];
+        }
+      case "default":
+      default:
+        switch (chartType) {
+          case "line": return baseLineData;
+          case "growing": return baseGrowingData;
+          case "declining": return baseDecliningData;
+          case "heatmap": return baseHeatmapData;
+          case "risk": return baseRiskFlagsData;
+          case "error": return baseErrorDistributionData;
+          default: return [];
+        }
     }
   };
 
-  const renderVisualization = () => {
-    switch (selectedViz) {
-      case "Line":
-        return (
+  // Toggle chart visibility
+  const toggleChart = (chart) => {
+    setChartVisibility((prev) => ({
+      ...prev,
+      [chart]: !prev[chart],
+    }));
+  };
+
+  // Define labels for heatmap
+  const xLabels = ["P1", "P2", "P3", "P4", "P5", "P6"];
+  const yLabels = ["High", "Med", "Low"];
+
+  return (
+    <div className="dashboard">
+      <div className="dashboard-controls">
+        <select value={selectedDataSet} onChange={(e) => setSelectedDataSet(e.target.value)}>
+          <option value="default">Default Data</option>
+          <option value="alternate">Alternate Data</option>
+        </select>
+        <input type="date" placeholder="Start Date" />
+        <input type="date" placeholder="End Date" />
+      </div>
+      <div className="kpi-container">
+        <div className="kpi-card">
+          <h4>Total Forecasted Demand</h4>
+          <h2>{kpiData.totalDemand.toLocaleString()} units</h2>
+        </div>
+        <div className="kpi-card">
+          <h4>Overall Forecast Accuracy</h4>
+          <h2>MAPE: {kpiData.mape}%</h2>
+        </div>
+        <div className="kpi-card">
+          <h4>Overall Bias</h4>
+          <h2>Bias: {kpiData.bias}%</h2>
+        </div>
+        <div className="kpi-card">
+          <h4>AI Confidence Score</h4>
+          <h2>{kpiData.aiConfidence}%</h2>
+        </div>
+      </div>
+      <div className="chart-controls">
+        <button onClick={() => toggleChart("historical")}>Toggle Historical</button>
+        <button onClick={() => toggleChart("growing")}>Toggle Growing</button>
+        <button onClick={() => toggleChart("declining")}>Toggle Declining</button>
+        <button onClick={() => toggleChart("heatmap")}>Toggle Heatmap</button>
+        <button onClick={() => toggleChart("risk")}>Toggle Risk</button>
+        <button onClick={() => toggleChart("error")}>Toggle Error</button>
+      </div>
+      <div className="charts-container">
+        {chartVisibility.historical && (
           <div className="chart-box">
-            <h4 className="chart-title">Sales Trend</h4>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={lineData}>
+            <h4 className="chart-title">Historical vs. Forecasted Demand</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={getData("line")}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
                 <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#666" }} />
                 <YAxis tick={{ fontSize: 12, fill: "#666" }} />
                 <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#0078D4" strokeWidth={2} dot={false} />
+                {Object.keys(getData("line")[0])
+                  .filter(key => key !== "name")
+                  .map((year, index) => (
+                    <Line
+                      key={year}
+                      type="monotone"
+                      dataKey={year}
+                      stroke={["#FF6F61", "#0078D4", "#FFD700", "#00C853", "#FF4444"][index % 5]}
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  ))}
               </LineChart>
             </ResponsiveContainer>
           </div>
-        );
-      case "Bar":
-        return (
+        )}
+        {chartVisibility.growing && (
           <div className="chart-box">
-            <h4 className="chart-title">Product Sales</h4>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barData}>
+            <h4 className="chart-title">Top Growing Products</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={getData("growing")}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#666", angle: -45, textAnchor: "end" }} interval={0} height={70} />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#666" }} />
                 <YAxis tick={{ fontSize: 12, fill: "#666" }} />
                 <Tooltip />
-                <Bar dataKey="sales" fill="#005BA1" barSize={20} />
+                <Bar dataKey="value" fill="#00C853" barSize={30} />
+                <Bar dataKey="base" fill="#FFFFFF" barSize={30} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-        );
-      case "Scatter":
-        return (
+        )}
+        {chartVisibility.declining && (
           <div className="chart-box">
-            <h4 className="chart-title">Forecast Accuracy</h4>
-            <ResponsiveContainer width="100%" height={300}>
-              <ScatterChart>
+            <h4 className="chart-title">Top Declining Products</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={getData("declining")}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                <XAxis type="number" dataKey="x" tick={{ fontSize: 12, fill: "#666" }} />
-                <YAxis type="number" dataKey="y" tick={{ fontSize: 12, fill: "#666" }} />
-                <Tooltip />
-                <Scatter data={scatterData} fill="#FF6F61" />
-              </ScatterChart>
-            </ResponsiveContainer>
-          </div>
-        );
-      case "Area":
-        return (
-          <div className="chart-box">
-            <h4 className="chart-title">Revenue Growth</h4>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={areaData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#666" }} />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#666" }} />
                 <YAxis tick={{ fontSize: 12, fill: "#666" }} />
                 <Tooltip />
-                <Area type="monotone" dataKey="revenue" fill="rgba(0, 120, 212, 0.3)" stroke="#0078D4" />
-              </AreaChart>
+                <Bar dataKey="value" fill="#FF4444" barSize={30} />
+                <Bar dataKey="base" fill="#FFFFFF" barSize={30} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
-        );
-      case "Pie":
-        return (
-          <div className="chart-box full-width">
-            <h4 className="chart-title">Category Distribution</h4>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={pieData} cx="50%" cy="50%" outerRadius={100} fill="#8884d8" dataKey="value" label>
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
+        )}
+        {chartVisibility.heatmap && (
+          <div className="chart-box">
+            <h4 className="chart-title">Forecast Accuracy by Product</h4>
+            <div style={{ height: 200 }}>
+              <Heatmap
+                xLabels={xLabels}
+                yLabels={yLabels}
+                data={getData("heatmap")}
+                squares
+                onClick={(x, y) => alert(`Clicked ${yLabels[y]} - ${xLabels[x]}: ${getData("heatmap")[y][x]}%`)}
+                cellStyle={(background, value, min, max, data, x, y) => ({
+                  background: `rgb(0, 151, 167, ${1.1 - value / 100})`,
+                  fontSize: "12px",
+                  color: "#fff",
+                })}
+                cellRender={(value) => value && `${value}%`}
+                title={(value) => `${value}%`}
+              />
+            </div>
+          </div>
+        )}
+        {chartVisibility.risk && (
+          <div className="chart-box">
+            <h4 className="chart-title">Risk Flags wrt Forecast Errors</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={getData("risk")} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                <XAxis type="number" tick={{ fontSize: 12, fill: "#666" }} />
+                <YAxis dataKey="name" type="category" tick={{ fontSize: 12, fill: "#666" }} width={100} />
                 <Tooltip />
-                <Legend verticalAlign="bottom" height={36} />
-              </PieChart>
+                <Bar dataKey="value" fill="#8B4513" barSize={30} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
-        );
-      case "3D":
-        return (
-          <div className="chart-box full-width">
-            <h4 className="chart-title">3D Visualization (Placeholder)</h4>
-            <p>3D plots require additional libraries like Three.js or react-three-fiber for implementation. Contact your developer to integrate.</p>
+        )}
+        {chartVisibility.error && (
+          <div className="chart-box">
+            <h4 className="chart-title">Forecast Error Distribution</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={getData("error")}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#666" }} />
+                <YAxis tick={{ fontSize: 12, fill: "#666" }} />
+                <Tooltip />
+                <Bar dataKey="value" fill="#87CEEB" barSize={30} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="dashboard">
-      <h2 className="dashboard-title">Dashboard Overview</h2>
-
-      {/* KPI Cards */}
-      <div className="kpi-container">
-        {[87, 46, -4, 86, 23, 65].map((percentage, idx) => (
-          <div key={idx} className="kpi-card">
-            <div className="kpi-header">
-              <h4>Forecasted Data</h4>
-              <span className="kpi-icon">📈</span>
-            </div>
-            <div className="kpi-value">
-              <h2 style={{ color: percentage >= 0 ? "#00C853" : "#FF4444" }}>
-                {percentage}%
-              </h2>
-              <p>{Math.floor(Math.random() * 500000000).toLocaleString()} Cases</p>
-            </div>
-            <div className="kpi-status">
-              <span style={{ color: percentage >= 0 ? "#00C853" : "#FF4444" }}>
-                {percentage >= 0 ? "On Target" : "Below Target"}
-              </span>
-              <div className="kpi-trend" style={{ background: percentage >= 0 ? "#E8F5E9" : "#FFEBEE" }}>
-                <span>{percentage >= 0 ? "↑" : "↓"} {Math.abs(percentage)}%</span>
-              </div>
-            </div>
-          </div>
-        ))}
+        )}
       </div>
-
-      {/* Visualization Selection */}
-      <div className="viz-selection">
-        <h3 className="viz-title">Select Visualization</h3>
-        <div className="viz-options">
-          <button onClick={() => handleVizSelect("Line")}>Line Graph</button>
-          <button onClick={() => handleVizSelect("Bar")}>Bar Graph</button>
-          <button onClick={() => handleVizSelect("Scatter")}>Scatter Plot</button>
-          <button onClick={() => handleVizSelect("Area")}>Area Chart</button>
-          <button onClick={() => handleVizSelect("Pie")}>Pie Chart</button>
-          <button onClick={() => handleVizSelect("3D")}>3D Visualization</button>
-        </div>
-      </div>
-
-      {/* Render Selected Visualization */}
-      {renderVisualization()}
     </div>
   );
 }

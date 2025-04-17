@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaTimes, FaTrash, FaCheck } from "react-icons/fa";
+import { FaTimes, FaTrash, FaCheck, FaEye } from "react-icons/fa";
 import "../App.css";
 
 function NotificationPopup({ togglePopup }) {
@@ -14,29 +14,37 @@ function NotificationPopup({ togglePopup }) {
   ]);
 
   useEffect(() => {
-    // Load notifications from local storage
     const storedNew = localStorage.getItem("newNotifications");
     const storedOld = localStorage.getItem("oldNotifications");
     if (storedNew) setNewNotifications(JSON.parse(storedNew));
     if (storedOld) setOldNotifications(JSON.parse(storedOld));
 
-    // Add event listener for Escape key
     const handleEscape = (e) => {
-      if (e.key === "Escape") {
-        togglePopup();
-      }
+      if (e.key === "Escape") togglePopup();
     };
     window.addEventListener("keydown", handleEscape);
-
-    // Cleanup event listener
     return () => window.removeEventListener("keydown", handleEscape);
   }, [togglePopup]);
 
   useEffect(() => {
-    // Save notifications to local storage
     localStorage.setItem("newNotifications", JSON.stringify(newNotifications));
     localStorage.setItem("oldNotifications", JSON.stringify(oldNotifications));
   }, [newNotifications, oldNotifications]);
+
+  // Listen for import success event
+  useEffect(() => {
+    const handleImportSuccess = (e) => {
+      const { filename } = e.detail || {};
+      const newNotification = {
+        id: Date.now(),
+        text: `📥 Data Import Successful - Latest sales data "${filename}" imported.`,
+        timestamp: new Date().toISOString(),
+      };
+      setNewNotifications((prev) => [newNotification, ...prev]);
+    };
+    window.addEventListener("importSuccess", handleImportSuccess);
+    return () => window.removeEventListener("importSuccess", handleImportSuccess);
+  }, []);
 
   const markAsRead = (notification) => {
     setNewNotifications((prev) => prev.filter((n) => n.id !== notification.id));
@@ -68,85 +76,117 @@ function NotificationPopup({ togglePopup }) {
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     const now = new Date();
-    const diff = (now - date) / 1000; // Difference in seconds
+    const diff = (now - date) / 1000;
 
     if (diff < 60) return "Just now";
-    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return date.toLocaleDateString();
   };
 
   return (
     <div className="notification-popup">
-      <div className="popup-header">
-        <h3>🔔 Notifications</h3>
-        <FaTimes className="close-icon" onClick={togglePopup} />
+      <div className="popup-header flex justify-between items-center p-4 border-b border-gray-200">
+        <h3 className="text-xl font-semibold text-gray-800 flex items-center">
+          <span className="mr-2">🔔</span> Notifications
+        </h3>
+        <button onClick={togglePopup} className="text-gray-500 hover:text-red-500 transition-colors">
+          <FaTimes size={20} />
+        </button>
       </div>
 
-      {/* New Notifications */}
-      <div className="notification-section">
-        <div className="section-header">
-          <h4>New Notifications</h4>
+      <div className="p-4">
+        <div className="section-header flex justify-between items-center mb-4">
+          <h4 className="text-lg font-medium text-gray-700">New Notifications</h4>
           {newNotifications.length > 0 && (
-            <button className="clear-all-btn" onClick={() => clearAll("new")}>
+            <button
+              onClick={() => clearAll("new")}
+              className="bg-blue-900 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-800 transition-colors"
+            >
               Clear All
             </button>
           )}
         </div>
-        {newNotifications.length > 0 ? (
-          newNotifications.map((notification) => (
-            <div key={notification.id} className="notification-item new">
-              <div className="notification-content">
-                <p>{notification.text}</p>
-                <span className="timestamp">{formatTimestamp(notification.timestamp)}</span>
+        <div className="notification-list space-y-3 max-h-[60vh] overflow-y-auto">
+          {newNotifications.length > 0 ? (
+            newNotifications.map((notification) => (
+              <div key={notification.id} className="notification-item bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r-lg shadow-sm">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="text-gray-800 text-sm">{notification.text}</p>
+                    <span className="text-xs text-gray-500 block mt-1">{formatTimestamp(notification.timestamp)}</span>
+                  </div>
+                  <div className="notification-actions flex space-x-3 ml-4">
+                    <button
+                      onClick={() => markAsRead(notification)}
+                      className="action-btn bg-blue-900 text-white p-1 rounded-full hover:bg-blue-800 transition-colors flex items-center justify-center w-9 h-9"
+                      title="Mark as Read"
+                    >
+                      <FaCheck size={14} />
+                    </button>
+                    {notification.action && (
+                      <button
+                        onClick={() => handleAction(notification)}
+                        className="action-btn bg-blue-900 text-white p-1 rounded-full hover:bg-blue-800 transition-colors flex items-center justify-center w-9 h-9"
+                        title="View"
+                      >
+                        <FaEye size={14} />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => clearNotification(notification.id, "new")}
+                      className="action-btn bg-blue-900 text-white p-1 rounded-full hover:bg-blue-800 transition-colors flex items-center justify-center w-9 h-9"
+                      title="Delete"
+                    >
+                      <FaTrash size={14} />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="notification-actions">
-                <button className="action-btn mark-read" onClick={() => markAsRead(notification)}>
-                  <FaCheck /> Mark as Read
-                </button>
-                {notification.action && (
-                  <button className="action-btn view" onClick={() => handleAction(notification)}>
-                    View
-                  </button>
-                )}
-                <button className="action-btn clear" onClick={() => clearNotification(notification.id, "new")}>
-                  <FaTrash />
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="no-notifications">No new notifications</p>
-        )}
+            ))
+          ) : (
+            <p className="text-gray-500 text-sm text-center py-2">No new notifications</p>
+          )}
+        </div>
       </div>
 
-      {/* Old Notifications */}
-      <div className="notification-section">
-        <div className="section-header">
-          <h4>Old Notifications</h4>
+      <div className="p-4">
+        <div className="section-header flex justify-between items-center mb-4">
+          <h4 className="text-lg font-medium text-gray-700">Old Notifications</h4>
           {oldNotifications.length > 0 && (
-            <button className="clear-all-btn" onClick={() => clearAll("old")}>
+            <button
+              onClick={() => clearAll("old")}
+              className="bg-blue-900 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-800 transition-colors"
+            >
               Clear All
             </button>
           )}
         </div>
-        {oldNotifications.length > 0 ? (
-          oldNotifications.map((notification) => (
-            <div key={notification.id} className="notification-item old">
-              <div className="notification-content">
-                <p>{notification.text}</p>
-                <span className="timestamp">{formatTimestamp(notification.timestamp)}</span>
+        <div className="notification-list space-y-3 max-h-[60vh] overflow-y-auto">
+          {oldNotifications.length > 0 ? (
+            oldNotifications.map((notification) => (
+              <div key={notification.id} className="notification-item bg-gray-100 border-l-4 border-gray-300 p-3 rounded-r-lg shadow-sm">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="text-gray-700 text-sm">{notification.text}</p>
+                    <span className="text-xs text-gray-500 block mt-1">{formatTimestamp(notification.timestamp)}</span>
+                  </div>
+                  <div className="notification-actions flex space-x-3 ml-4">
+                    <button
+                      onClick={() => clearNotification(notification.id, "old")}
+                      className="action-btn bg-blue-900 text-white p-1 rounded-full hover:bg-blue-800 transition-colors flex items-center justify-center w-9 h-9"
+                      title="Delete"
+                    >
+                      <FaTrash size={14} />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="notification-actions">
-                <button className="action-btn clear" onClick={() => clearNotification(notification.id, "old")}>
-                  <FaTrash />
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="no-notifications">No old notifications</p>
-        )}
+            ))
+          ) : (
+            <p className="text-gray-500 text-sm text-center py-2">No old notifications</p>
+          )}
+        </div>
       </div>
     </div>
   );
